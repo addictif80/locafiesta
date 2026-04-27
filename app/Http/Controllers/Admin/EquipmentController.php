@@ -33,7 +33,7 @@ class EquipmentController extends Controller
             'deposit_amount' => 'required|numeric|min:0',
             'is_active' => 'boolean',
             'photos' => 'nullable|array',
-            'photos.*' => 'image|max:5120',
+            'photos.*' => 'file|mimes:jpg,jpeg,png,gif,webp,bmp|max:5120',
         ]);
 
         $equipment = Equipment::create([
@@ -82,7 +82,7 @@ class EquipmentController extends Controller
             'deposit_amount' => 'required|numeric|min:0',
             'is_active' => 'boolean',
             'photos' => 'nullable|array',
-            'photos.*' => 'image|max:5120',
+            'photos.*' => 'file|mimes:jpg,jpeg,png,gif,webp,bmp|max:5120',
         ]);
 
         $equipment->update([
