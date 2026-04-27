@@ -168,38 +168,38 @@
                 </table>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border p-6" x-data="promoCode()">
+            <div class="bg-white rounded-xl shadow-sm border p-6">
                 <h3 class="font-semibold text-gray-800 mb-4">Code promo</h3>
                 <div class="flex gap-3">
-                    <input type="text" x-model="code" placeholder="Entrez votre code promo" class="flex-1 border rounded-lg px-3 py-2 text-sm uppercase">
-                    <button type="button" @click="applyCode" :disabled="loading" class="bg-gray-800 text-white px-5 py-2 rounded-lg text-sm hover:bg-gray-700 disabled:opacity-50">
-                        <span x-show="!loading">Appliquer</span>
-                        <span x-show="loading"><i class="fas fa-spinner fa-spin"></i></span>
+                    <input type="text" x-model="promo.code" placeholder="Entrez votre code promo" class="flex-1 border rounded-lg px-3 py-2 text-sm uppercase">
+                    <button type="button" @click="applyPromoCode()" :disabled="promo.loading" class="bg-gray-800 text-white px-5 py-2 rounded-lg text-sm hover:bg-gray-700 disabled:opacity-50">
+                        <span x-show="!promo.loading">Appliquer</span>
+                        <span x-show="promo.loading"><i class="fas fa-spinner fa-spin"></i></span>
                     </button>
                 </div>
-                <p x-show="error" x-text="error" class="text-red-500 text-xs mt-2"></p>
-                <div x-show="applied" class="mt-2 bg-green-50 border border-green-200 rounded-lg p-2 text-sm text-green-700 flex items-center gap-2">
-                    <i class="fas fa-tag"></i> Code appliqué : <strong x-text="code"></strong>
+                <p x-show="promo.error" x-text="promo.error" class="text-red-500 text-xs mt-2"></p>
+                <div x-show="promo.applied" class="mt-2 bg-green-50 border border-green-200 rounded-lg p-2 text-sm text-green-700 flex items-center gap-2">
+                    <i class="fas fa-tag"></i> Code appliqué : <strong x-text="promo.code"></strong>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border p-6" x-data="{ diff: false }">
+            <div class="bg-white rounded-xl shadow-sm border p-6">
                 <label class="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" x-model="diff" @change="$parent.form.use_different_address = diff" class="rounded">
+                    <input type="checkbox" x-model="form.use_different_address" class="rounded">
                     <span class="font-medium text-gray-800">Adresse d'utilisation différente de mon adresse de facturation</span>
                 </label>
-                <div x-show="diff" x-cloak class="mt-4 grid grid-cols-3 gap-4">
+                <div x-show="form.use_different_address" x-cloak class="mt-4 grid grid-cols-3 gap-4">
                     <div class="col-span-3">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Adresse d'utilisation *</label>
-                        <input type="text" x-model="$parent.form.use_address" placeholder="N° et rue" class="w-full border rounded-lg px-3 py-2 text-sm">
+                        <input type="text" x-model="form.use_address" placeholder="N° et rue" class="w-full border rounded-lg px-3 py-2 text-sm">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Code postal *</label>
-                        <input type="text" x-model="$parent.form.use_postal_code" class="w-full border rounded-lg px-3 py-2 text-sm">
+                        <input type="text" x-model="form.use_postal_code" class="w-full border rounded-lg px-3 py-2 text-sm">
                     </div>
                     <div class="col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Ville *</label>
-                        <input type="text" x-model="$parent.form.use_city" class="w-full border rounded-lg px-3 py-2 text-sm">
+                        <input type="text" x-model="form.use_city" class="w-full border rounded-lg px-3 py-2 text-sm">
                     </div>
                 </div>
             </div>
@@ -297,6 +297,7 @@ function reservationWizard() {
             use_city: '',
         },
         discountAmount: 0,
+        promo: { code: '', loading: false, applied: false, error: '' },
         get cartItems() {
             return equipmentData.filter(e => this.form.equipment_ids.includes(e.id));
         },
@@ -397,6 +398,29 @@ function reservationWizard() {
             calendar.render();
             this.refreshCalendar();
         },
+        async applyPromoCode() {
+            if (!this.promo.code) return;
+            this.promo.loading = true;
+            this.promo.error = '';
+            const resp = await fetch('{{ route('client.promo.check') }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content },
+                body: JSON.stringify({ code: this.promo.code })
+            });
+            const data = await resp.json();
+            this.promo.loading = false;
+            if (data.valid) {
+                this.promo.applied = true;
+                this.form.promo_code = this.promo.code;
+                if (data.type === 'percentage') {
+                    this.discountAmount = Math.round(this.subtotal * data.value / 100 * 100) / 100;
+                } else {
+                    this.discountAmount = Math.min(Number(data.value), this.subtotal);
+                }
+            } else {
+                this.promo.error = data.message;
+            }
+        },
         submitForm(e) {
             if (this.form.equipment_ids.length === 0 || !this.form.start_date || !this.form.end_date) {
                 e.preventDefault();
@@ -406,47 +430,5 @@ function reservationWizard() {
     };
 }
 
-function promoCode() {
-    return {
-        code: '',
-        loading: false,
-        applied: false,
-        error: '',
-        async applyCode() {
-            if (!this.code) return;
-            this.loading = true;
-            this.error = '';
-            const resp = await fetch('{{ route('client.promo.check') }}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content },
-                body: JSON.stringify({ code: this.code })
-            });
-            const data = await resp.json();
-            this.loading = false;
-            if (data.valid) {
-                this.applied = true;
-                this.$parent.form.promo_code = this.code;
-                const wizard = Alpine.store ? null : document.querySelector('[x-data]').__x;
-                // Update discount in parent
-                const subtotal = document.querySelector('[x-data="reservationWizard()"]')?._x_dataStack;
-                if (data.type === 'percentage') {
-                    this.$parent.discountAmount = Math.round(this.$parent.subtotal * data.value / 100 * 100) / 100;
-                } else {
-                    this.$parent.discountAmount = Math.min(data.value, this.$parent.subtotal);
-                }
-            } else {
-                this.error = data.message;
-            }
-        }
-    };
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize calendar on step 1
-    const el = document.getElementById('calendar');
-    if (el && el.offsetParent !== null) {
-        // will be initialized by Alpine when equipment is selected
-    }
-});
 </script>
 @endpush
