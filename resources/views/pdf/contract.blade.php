@@ -101,12 +101,12 @@
         <div class="party-col">
             <div class="party-box">
                 <div class="party-role">Le locataire</div>
-                <div class="party-name">{{ $reservation->user->full_name }}</div>
+                <div class="party-name">{{ $reservation->client->full_name }}</div>
                 <div class="party-detail">
-                    {{ $reservation->user->address }}<br>
-                    {{ $reservation->user->postal_code }} {{ $reservation->user->city }}<br>
-                    Tél : {{ $reservation->user->phone }}<br>
-                    Email : {{ $reservation->user->email }}
+                    {{ $reservation->client->address }}<br>
+                    {{ $reservation->client->postal_code }} {{ $reservation->client->city }}<br>
+                    Tél : {{ $reservation->client->phone }}<br>
+                    Email : {{ $reservation->client->email }}
                 </div>
             </div>
         </div>
@@ -218,7 +218,7 @@ ARTICLE 6 - RETOUR DU MATÉRIEL : Le matériel doit être restitué dans l\'éta
         <div class="signature-col">
             <div class="signature-box">
                 <div class="signature-title">Le locataire</div>
-                <div class="signature-name">{{ $reservation->user->full_name }}<br>
+                <div class="signature-name">{{ $reservation->client->full_name }}<br>
                     <span style="font-size: 8px; color: #9ca3af;">Lu et approuvé — "Bon pour accord"</span>
                 </div>
                 <div class="signature-line"></div>
