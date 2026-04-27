@@ -52,9 +52,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('reservations/{reservation}/annuler', [Admin\ReservationController::class, 'cancel'])->name('reservations.cancel');
 
     // Inspections
+    Route::get('etats-des-lieux', [Admin\InspectionController::class, 'index'])->name('inspections.index');
     Route::get('reservations/{reservation}/etat-des-lieux/{type}', [Admin\InspectionController::class, 'create'])->name('inspections.create');
     Route::post('reservations/{reservation}/etat-des-lieux/{type}', [Admin\InspectionController::class, 'store'])->name('inspections.store');
     Route::get('etat-des-lieux/{inspection}', [Admin\InspectionController::class, 'show'])->name('inspections.show');
+
+    // Security deposits
+    Route::get('cautions', [Admin\SecurityDepositController::class, 'index'])->name('security-deposits.index');
+    Route::patch('cautions/{deposit}/statut', [Admin\SecurityDepositController::class, 'updateStatus'])->name('security-deposits.update-status');
 
     // Invoices
     Route::resource('factures', Admin\InvoiceController::class)->parameters(['factures' => 'invoice']);

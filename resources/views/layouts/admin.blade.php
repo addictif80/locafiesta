@@ -34,6 +34,12 @@
             <a href="{{ route('admin.factures.index') }}" class="nav-link {{ request()->routeIs('admin.factures.*') ? 'bg-orange-600' : 'hover:bg-gray-800' }} flex items-center px-3 py-2 rounded-lg text-sm">
                 <i class="fas fa-file-invoice-dollar w-5 mr-3"></i>Factures
             </a>
+            <a href="{{ route('admin.inspections.index') }}" class="nav-link {{ request()->routeIs('admin.inspections.*') ? 'bg-orange-600' : 'hover:bg-gray-800' }} flex items-center px-3 py-2 rounded-lg text-sm">
+                <i class="fas fa-clipboard-check w-5 mr-3"></i>États des lieux
+            </a>
+            <a href="{{ route('admin.security-deposits.index') }}" class="nav-link {{ request()->routeIs('admin.security-deposits.*') ? 'bg-orange-600' : 'hover:bg-gray-800' }} flex items-center px-3 py-2 rounded-lg text-sm">
+                <i class="fas fa-money-check w-5 mr-3"></i>Cautions
+            </a>
             <hr class="border-gray-700 my-3">
             <a href="{{ route('admin.promo-codes.index') }}" class="nav-link {{ request()->routeIs('admin.promo-codes.*') ? 'bg-orange-600' : 'hover:bg-gray-800' }} flex items-center px-3 py-2 rounded-lg text-sm">
                 <i class="fas fa-tag w-5 mr-3"></i>Codes promo

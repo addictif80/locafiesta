@@ -14,6 +14,22 @@ class InspectionController extends Controller
 {
     public function __construct(private InspectionService $inspectionService) {}
 
+    public function index(Request $request)
+    {
+        $query = Inspection::with(['reservation.client', 'admin'])
+            ->latest('signed_at');
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        if ($request->filled('search')) {
+            $query->whereHas('reservation', fn($q) => $q->where('reference', 'like', '%'.$request->search.'%'));
+        }
+
+        $inspections = $query->paginate(20)->withQueryString();
+        return view('admin.inspections.index', compact('inspections'));
+    }
+
     public function create(Reservation $reservation, string $type)
     {
         abort_unless(in_array($type, ['departure', 'return']), 404);
