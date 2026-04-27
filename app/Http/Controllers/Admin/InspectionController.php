@@ -128,4 +128,11 @@ class InspectionController extends Controller
         $inspection->load(['reservation.client', 'items.checklistItem', 'photos', 'admin']);
         return view('admin.inspections.show', compact('inspection'));
     }
+
+    public function updateMessage(Request $request, Inspection $inspection)
+    {
+        $request->validate(['pdf_message' => 'nullable|string']);
+        $inspection->update(['pdf_message' => $request->pdf_message]);
+        return back()->with('success', 'Message mis à jour.');
+    }
 }

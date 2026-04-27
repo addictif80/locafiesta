@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Inspection extends Model
 {
     protected $fillable = [
-        'reservation_id', 'type', 'admin_id', 'general_notes',
+        'reservation_id', 'type', 'admin_id', 'general_notes', 'pdf_message',
         'client_signature_path', 'admin_signature_path', 'signed_at',
     ];
 

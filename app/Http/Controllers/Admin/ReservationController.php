@@ -96,6 +96,7 @@ class ReservationController extends Controller
             'end_time' => 'required',
             'status' => 'required|in:pending_payment,confirmed,in_progress,completed,cancelled,cancelled_no_refund',
             'admin_notes' => 'nullable|string',
+            'contract_message' => 'nullable|string',
             'use_different_address' => 'boolean',
             'use_address' => 'nullable|string|max:255',
             'use_postal_code' => 'nullable|string|max:10',

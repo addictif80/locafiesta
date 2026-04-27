@@ -56,6 +56,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('reservations/{reservation}/etat-des-lieux/{type}', [Admin\InspectionController::class, 'create'])->name('inspections.create');
     Route::post('reservations/{reservation}/etat-des-lieux/{type}', [Admin\InspectionController::class, 'store'])->name('inspections.store');
     Route::get('etat-des-lieux/{inspection}', [Admin\InspectionController::class, 'show'])->name('inspections.show');
+    Route::patch('etat-des-lieux/{inspection}/message', [Admin\InspectionController::class, 'updateMessage'])->name('inspections.update-message');
 
     // Security deposits
     Route::get('cautions', [Admin\SecurityDepositController::class, 'index'])->name('security-deposits.index');

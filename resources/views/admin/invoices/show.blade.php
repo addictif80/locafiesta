@@ -30,25 +30,59 @@
     </div>
     <div class="mt-4 bg-white rounded-xl shadow-sm border p-6">
         <h3 class="font-semibold text-gray-800 mb-4">Modifier le statut</h3>
-        <form method="POST" action="{{ route('admin.factures.update', $invoice) }}" class="grid grid-cols-2 gap-4">
+        <form method="POST" action="{{ route('admin.factures.update', $invoice) }}" class="space-y-4" id="invoiceUpdateForm">
             @csrf @method('PUT')
             <input type="hidden" name="amount" value="{{ $invoice->amount }}">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                <select name="status" class="w-full border rounded-lg px-3 py-2 text-sm">
-                    @foreach(['pending' => 'En attente', 'paid' => 'Payée', 'cancelled' => 'Annulée', 'refunded' => 'Remboursée'] as $val => $label)
-                    <option value="{{ $val }}" {{ $invoice->status === $val ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
+            <input type="hidden" name="pdf_message" id="invoice_pdf_message_input">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                    <select name="status" class="w-full border rounded-lg px-3 py-2 text-sm">
+                        @foreach(['pending' => 'En attente', 'paid' => 'Payée', 'cancelled' => 'Annulée', 'refunded' => 'Remboursée'] as $val => $label)
+                        <option value="{{ $val }}" {{ $invoice->status === $val ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Moyen de paiement</label>
+                    <input type="text" name="payment_method" value="{{ $invoice->payment_method }}" class="w-full border rounded-lg px-3 py-2 text-sm">
+                </div>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Moyen de paiement</label>
-                <input type="text" name="payment_method" value="{{ $invoice->payment_method }}" class="w-full border rounded-lg px-3 py-2 text-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="block text-sm font-medium text-gray-700"><i class="fas fa-comment-alt mr-1 text-orange-400"></i>Message libre sur la facture PDF</label>
+                    <button type="button" id="resetInvoiceMsg" class="text-xs text-orange-500 hover:underline">Message par défaut</button>
+                </div>
+                <div id="invoice_pdf_message_editor" class="bg-white border rounded-lg" style="min-height: 120px;">{!! $invoice->pdf_message !!}</div>
             </div>
-            <div class="col-span-2 flex justify-end">
+            <div class="flex justify-end">
                 <button type="submit" class="bg-orange-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-orange-600">Sauvegarder</button>
             </div>
         </form>
     </div>
 </div>
 @endsection
+
+@push('head')
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+@endpush
+
+@push('scripts')
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+const invoiceQuill = new Quill('#invoice_pdf_message_editor', {
+    theme: 'snow',
+    modules: { toolbar: [['bold','italic','underline'],[{'list':'ordered'},{'list':'bullet'}],['clean']] }
+});
+
+document.getElementById('invoiceUpdateForm').addEventListener('submit', function() {
+    const html = invoiceQuill.root.innerHTML;
+    document.getElementById('invoice_pdf_message_input').value = html === '<p><br></p>' ? '' : html;
+});
+
+document.getElementById('resetInvoiceMsg').addEventListener('click', function() {
+    const defaultMsg = @json(\App\Models\Setting::get('invoice_message_default', ''));
+    invoiceQuill.root.innerHTML = defaultMsg || '';
+});
+</script>
+@endpush

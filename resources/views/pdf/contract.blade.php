@@ -204,6 +204,13 @@ ARTICLE 5 - ANNULATION : Toute annulation moins de 48h avant le début de la loc
 ARTICLE 6 - RETOUR DU MATÉRIEL : Le matériel doit être restitué dans l\'état dans lequel il a été remis, propre et complet.')) !!}
     </div>
 
+    {{-- Free message --}}
+    @if(!empty($pdfMessage))
+    <div style="border: 1px solid #fed7aa; border-radius: 4px; padding: 12px 14px; margin: 16px 0; background: #fffbf5; font-size: 10px; color: #4b5563; line-height: 1.6;">
+        {!! $pdfMessage !!}
+    </div>
+    @endif
+
     {{-- Signatures --}}
     <div class="signatures">
         <div class="signature-col">

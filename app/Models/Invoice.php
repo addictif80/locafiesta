@@ -11,7 +11,7 @@ class Invoice extends Model
 
     protected $fillable = [
         'invoice_number', 'reservation_id', 'client_id', 'type',
-        'amount', 'status', 'pdf_path', 'paid_at', 'payment_method', 'notes',
+        'amount', 'status', 'pdf_path', 'paid_at', 'payment_method', 'notes', 'pdf_message',
     ];
 
     protected $casts = ['amount' => 'decimal:2', 'paid_at' => 'datetime'];

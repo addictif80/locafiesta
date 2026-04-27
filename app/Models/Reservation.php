@@ -17,7 +17,7 @@ class Reservation extends Model
         'stripe_payment_intent_id', 'stripe_charge_id', 'deposit_paid_at',
         'use_different_address', 'use_address', 'use_postal_code', 'use_city',
         'cancelled_at', 'cancellation_reason', 'deposit_refunded', 'deposit_refunded_at',
-        'admin_notes',
+        'admin_notes', 'contract_message',
     ];
 
     protected $casts = [

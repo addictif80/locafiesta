@@ -26,6 +26,9 @@ class SettingsController extends Controller
             'cancellation_hours' => 'required|integer|min:1',
             'invoice_prefix' => 'nullable|string|max:10',
             'cgv_text' => 'nullable|string',
+            'contract_message_default' => 'nullable|string',
+            'invoice_message_default' => 'nullable|string',
+            'inspection_message_default' => 'nullable|string',
         ]);
 
         foreach ($request->except('_token', '_method') as $key => $value) {

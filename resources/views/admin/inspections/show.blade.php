@@ -62,6 +62,21 @@
     </div>
     @endif
 
+    <form method="POST" action="{{ route('admin.inspections.update-message', $inspection) }}" class="bg-white rounded-xl shadow-sm border p-6 mb-6" id="inspectionMsgForm">
+        @csrf @method('PATCH')
+        <input type="hidden" name="pdf_message" id="inspection_pdf_message_input">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold text-gray-800"><i class="fas fa-comment-alt mr-2 text-orange-400"></i>Message libre sur le PDF</h3>
+            <button type="button" id="resetInspectionMsg" class="text-xs text-orange-500 hover:underline">Message par défaut</button>
+        </div>
+        <div id="inspection_pdf_message_editor" class="bg-white border rounded-lg mb-4" style="min-height: 120px;">{!! $inspection->pdf_message !!}</div>
+        <div class="flex justify-end">
+            <button type="submit" class="bg-orange-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-orange-600">
+                <i class="fas fa-save mr-1"></i>Sauvegarder le message
+            </button>
+        </div>
+    </form>
+
     <div class="bg-white rounded-xl shadow-sm border p-6">
         <h3 class="font-semibold text-gray-800 mb-4">Signatures</h3>
         <div class="grid grid-cols-2 gap-8">
@@ -85,3 +100,27 @@
     </div>
 </div>
 @endsection
+
+@push('head')
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+@endpush
+
+@push('scripts')
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+const inspectionQuill = new Quill('#inspection_pdf_message_editor', {
+    theme: 'snow',
+    modules: { toolbar: [['bold','italic','underline'],[{'list':'ordered'},{'list':'bullet'}],['clean']] }
+});
+
+document.getElementById('inspectionMsgForm').addEventListener('submit', function() {
+    const html = inspectionQuill.root.innerHTML;
+    document.getElementById('inspection_pdf_message_input').value = html === '<p><br></p>' ? '' : html;
+});
+
+document.getElementById('resetInspectionMsg').addEventListener('click', function() {
+    const defaultMsg = @json(\App\Models\Setting::get('inspection_message_default', ''));
+    inspectionQuill.root.innerHTML = defaultMsg || '';
+});
+</script>
+@endpush

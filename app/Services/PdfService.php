@@ -22,7 +22,9 @@ class PdfService
             'siret' => Setting::get('company_siret', ''),
         ];
 
-        return Pdf::loadView('pdf.invoice', compact('invoice', 'company'))
+        $pdfMessage = $invoice->pdf_message ?: Setting::get('invoice_message_default', '');
+
+        return Pdf::loadView('pdf.invoice', compact('invoice', 'company', 'pdfMessage'))
             ->setPaper('a4', 'portrait');
     }
 
@@ -39,8 +41,9 @@ class PdfService
         ];
 
         $cgv = Setting::get('cgv_text', '');
+        $pdfMessage = $reservation->contract_message ?: Setting::get('contract_message_default', '');
 
-        return Pdf::loadView('pdf.contract', compact('reservation', 'company', 'cgv'))
+        return Pdf::loadView('pdf.contract', compact('reservation', 'company', 'cgv', 'pdfMessage'))
             ->setPaper('a4', 'portrait');
     }
 
@@ -53,7 +56,9 @@ class PdfService
             'address' => Setting::get('company_address', ''),
         ];
 
-        return Pdf::loadView('pdf.inspection', compact('inspection', 'company'))
+        $pdfMessage = $inspection->pdf_message ?: Setting::get('inspection_message_default', '');
+
+        return Pdf::loadView('pdf.inspection', compact('inspection', 'company', 'pdfMessage'))
             ->setPaper('a4', 'portrait');
     }
 }

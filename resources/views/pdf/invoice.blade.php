@@ -125,9 +125,9 @@
         <div class="party">
             <div class="party-label">Client</div>
             <div class="party-box">
-                <div class="party-name">{{ $invoice->user->full_name ?? ($invoice->reservation->user->full_name ?? '') }}</div>
+                <div class="party-name">{{ $invoice->client->full_name ?? '' }}</div>
                 <div class="party-detail">
-                    @php $user = $invoice->user ?? $invoice->reservation?->user; @endphp
+                    @php $user = $invoice->client; @endphp
                     @if($user)
                         {{ $user->address }}<br>
                         {{ $user->postal_code }} {{ $user->city }}<br>
@@ -229,6 +229,13 @@
             @endif
         </p>
     </div>
+
+    {{-- Free message --}}
+    @if(!empty($pdfMessage))
+    <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px 14px; margin-bottom: 20px; background: #f9fafb; font-size: 10px; color: #4b5563; line-height: 1.6;">
+        {!! $pdfMessage !!}
+    </div>
+    @endif
 
     {{-- Footer --}}
     <div class="footer">

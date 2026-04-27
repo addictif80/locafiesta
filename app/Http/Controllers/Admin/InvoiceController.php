@@ -71,6 +71,7 @@ class InvoiceController extends Controller
             'status' => 'required|in:pending,paid,cancelled,refunded',
             'payment_method' => 'nullable|string|max:100',
             'notes' => 'nullable|string',
+            'pdf_message' => 'nullable|string',
             'amount' => 'required|numeric|min:0',
         ]);
 

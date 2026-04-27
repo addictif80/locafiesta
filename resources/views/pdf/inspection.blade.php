@@ -104,11 +104,11 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Client</span>
-                    <span class="info-value">{{ $reservation->user->full_name }}</span>
+                    <span class="info-value">{{ $reservation->client->full_name }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Téléphone</span>
-                    <span class="info-value">{{ $reservation->user->phone }}</span>
+                    <span class="info-value">{{ $reservation->client->phone }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Matériels</span>
@@ -264,7 +264,7 @@
             <div class="sig-box">
                 <div class="sig-title">Client</div>
                 <div class="sig-name">
-                    {{ $reservation->user->full_name }}<br>
+                    {{ $reservation->client->full_name }}<br>
                     <span style="font-size: 9px; color: #9ca3af;">Lu et approuvé</span>
                 </div>
                 @if($inspection->client_signature_path && Str::startsWith($inspection->client_signature_path, 'data:image'))
@@ -276,6 +276,13 @@
             </div>
         </div>
     </div>
+
+    {{-- Free message --}}
+    @if(!empty($pdfMessage))
+    <div style="border: 1px solid #e5e7eb; border-radius: 4px; padding: 12px 14px; margin: 16px 0; background: #f9fafb; font-size: 10px; color: #4b5563; line-height: 1.6;">
+        {!! $pdfMessage !!}
+    </div>
+    @endif
 
     {{-- Footer --}}
     <div class="footer">
