@@ -46,7 +46,7 @@
     .condition-note { font-size: 9px; color: #6b7280; margin-top: 2px; }
 
     /* CGV */
-    .cgv-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 4px; padding: 14px; font-size: 9.5px; color: #4b5563; line-height: 1.7; max-height: 200px; overflow: hidden; margin-bottom: 8px; }
+    .cgv-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 4px; padding: 14px; font-size: 9.5px; color: #4b5563; line-height: 1.7; margin-bottom: 8px; }
 
     /* Signatures */
     .signatures { display: table; width: 100%; margin-top: 28px; }
