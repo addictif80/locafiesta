@@ -75,6 +75,12 @@
                 </div>
                 <div x-show="form.equipment_ids.length > 0">
                     <div id="calendar" class="mb-4"></div>
+                    <div x-show="form.start_date && !form.end_date" class="text-sm text-orange-600 mb-3">
+                        <i class="fas fa-mouse-pointer mr-1"></i> Cliquez maintenant sur la date de retour
+                    </div>
+                    <div x-show="!form.start_date" class="text-sm text-gray-400 mb-3">
+                        <i class="fas fa-mouse-pointer mr-1"></i> Cliquez sur la date de départ
+                    </div>
                     <div x-show="form.start_date && form.end_date" class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
                         <p class="text-sm text-orange-700">
                             <i class="fas fa-calendar-check mr-2"></i>
@@ -268,6 +274,12 @@ const equipmentData = @json($equipment->map(fn($e) => ['id' => $e->id, 'name' =>
 const depositPercentage = {{ \App\Models\Setting::get('deposit_percentage', 30) }};
 let calendar = null;
 
+function toYMD(date) {
+    return date.getFullYear() + '-' +
+        String(date.getMonth() + 1).padStart(2, '0') + '-' +
+        String(date.getDate()).padStart(2, '0');
+}
+
 function reservationWizard() {
     return {
         currentStep: 1,
@@ -290,7 +302,7 @@ function reservationWizard() {
         },
         get daysCount() {
             if (!this.form.start_date || !this.form.end_date) return 0;
-            const diff = (new Date(this.form.end_date) - new Date(this.form.start_date)) / 86400000;
+            const diff = (new Date(this.form.end_date + 'T12:00:00') - new Date(this.form.start_date + 'T12:00:00')) / 86400000;
             return Math.max(1, Math.round(diff) + 1);
         },
         get subtotal() {
@@ -323,6 +335,15 @@ function reservationWizard() {
         formatPrice(n) {
             return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2 }).format(n);
         },
+        renderSelectionEvent() {
+            calendar.getEventById('sel')?.remove();
+            const start = this.form.start_date;
+            if (!start) return;
+            const end = this.form.end_date || start;
+            const endExcl = new Date(end + 'T12:00:00');
+            endExcl.setDate(endExcl.getDate() + 1);
+            calendar.addEvent({ id: 'sel', start, end: toYMD(endExcl), allDay: true, display: 'background', color: '#f97316' });
+        },
         async refreshCalendar() {
             if (this.form.equipment_ids.length === 0) {
                 if (calendar) calendar.removeAllEventSources();
@@ -337,26 +358,38 @@ function reservationWizard() {
             if (calendar) {
                 calendar.removeAllEventSources();
                 calendar.addEventSource(unavailable.map(d => ({ start: d, allDay: true, display: 'background', color: '#ef4444' })));
+                this.renderSelectionEvent();
             }
         },
         nextStep() {
-            if (this.currentStep === 1 && (this.form.equipment_ids.length === 0 || !this.form.start_date)) return;
+            if (this.currentStep === 1 && (this.form.equipment_ids.length === 0 || !this.form.start_date || !this.form.end_date)) return;
             this.currentStep++;
         },
         prevStep() { this.currentStep--; },
         initCalendar() {
             const self = this;
+            const todayStr = toYMD(new Date());
             calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
                 initialView: 'dayGridMonth',
                 locale: 'fr',
-                selectable: true,
-                selectMirror: true,
-                validRange: { start: new Date().toISOString().split('T')[0] },
-                select(info) {
-                    self.form.start_date = info.startStr;
-                    const end = new Date(info.end);
-                    end.setDate(end.getDate() - 1);
-                    self.form.end_date = end.toISOString().split('T')[0];
+                selectable: false,
+                validRange: { start: todayStr },
+                dateClick(info) {
+                    const d = info.dateStr;
+                    if (!self.form.start_date || self.form.end_date) {
+                        // Premier clic : début de sélection
+                        self.form.start_date = d;
+                        self.form.end_date = '';
+                    } else {
+                        // Deuxième clic : fin de sélection
+                        if (d < self.form.start_date) {
+                            self.form.end_date = self.form.start_date;
+                            self.form.start_date = d;
+                        } else {
+                            self.form.end_date = d;
+                        }
+                    }
+                    self.renderSelectionEvent();
                 },
                 headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
                 height: 'auto',
@@ -365,7 +398,7 @@ function reservationWizard() {
             this.refreshCalendar();
         },
         submitForm(e) {
-            if (this.form.equipment_ids.length === 0 || !this.form.start_date) {
+            if (this.form.equipment_ids.length === 0 || !this.form.start_date || !this.form.end_date) {
                 e.preventDefault();
                 alert('Veuillez sélectionner du matériel et des dates.');
             }
