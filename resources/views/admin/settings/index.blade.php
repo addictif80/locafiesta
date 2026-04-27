@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-3xl mx-auto">
     <h2 class="text-xl font-bold text-gray-800 mb-6">Paramètres de l'application</h2>
-    <form method="POST" action="{{ route('admin.settings.update') }}" class="space-y-6">
+    <form id="settings-form" method="POST" action="{{ route('admin.settings.update') }}" class="space-y-6">
         @csrf @method('PUT')
         <div class="bg-white rounded-xl shadow-sm border p-6 space-y-4">
             <h3 class="font-semibold text-gray-800 border-b pb-3"><i class="fas fa-building mr-2 text-orange-400"></i>Informations société</h3>
@@ -61,19 +61,19 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Message sur les <span class="text-orange-500 font-semibold">contrats</span></label>
                 <input type="hidden" name="contract_message_default" id="contract_message_default_input">
-                <div id="contract_message_default_editor" class="bg-white border rounded-lg" style="min-height: 120px;">{!! $settings['contract_message_default']->value ?? '' !!}</div>
+                <div id="contract_message_default_editor" class="bg-white border rounded-lg" style="min-height: 120px;">{!! $settings['contract_message_default']?->value ?? '' !!}</div>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Message sur les <span class="text-orange-500 font-semibold">factures</span></label>
                 <input type="hidden" name="invoice_message_default" id="invoice_message_default_input">
-                <div id="invoice_message_default_editor" class="bg-white border rounded-lg" style="min-height: 120px;">{!! $settings['invoice_message_default']->value ?? '' !!}</div>
+                <div id="invoice_message_default_editor" class="bg-white border rounded-lg" style="min-height: 120px;">{!! $settings['invoice_message_default']?->value ?? '' !!}</div>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Message sur les <span class="text-orange-500 font-semibold">états des lieux</span></label>
                 <input type="hidden" name="inspection_message_default" id="inspection_message_default_input">
-                <div id="inspection_message_default_editor" class="bg-white border rounded-lg" style="min-height: 120px;">{!! $settings['inspection_message_default']->value ?? '' !!}</div>
+                <div id="inspection_message_default_editor" class="bg-white border rounded-lg" style="min-height: 120px;">{!! $settings['inspection_message_default']?->value ?? '' !!}</div>
             </div>
         </div>
 
@@ -105,7 +105,7 @@ const quillOptions = {
 
 function initQuill(editorId, inputId) {
     const q = new Quill('#' + editorId, quillOptions);
-    document.querySelector('form').addEventListener('submit', function() {
+    document.getElementById('settings-form').addEventListener('submit', function() {
         document.getElementById(inputId).value = q.root.innerHTML === '<p><br></p>' ? '' : q.root.innerHTML;
     });
     return q;

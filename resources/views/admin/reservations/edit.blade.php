@@ -6,7 +6,7 @@
         <a href="{{ route('admin.reservations.show', $reservation) }}" class="text-sm text-orange-500 hover:underline"><i class="fas fa-arrow-left mr-1"></i>{{ $reservation->reference }}</a>
         <h2 class="text-xl font-bold text-gray-800 mt-2">Modifier la réservation</h2>
     </div>
-    <form method="POST" action="{{ route('admin.reservations.update', $reservation) }}" class="space-y-6">
+    <form id="reservation-edit-form" method="POST" action="{{ route('admin.reservations.update', $reservation) }}" class="space-y-6">
         @csrf @method('PUT')
         <div class="bg-white rounded-xl shadow-sm border p-6 space-y-4">
             <div class="grid grid-cols-2 gap-4">
@@ -82,7 +82,7 @@ const contractQuill = new Quill('#contract_message_editor', {
     modules: { toolbar: [['bold','italic','underline'],[{'list':'ordered'},{'list':'bullet'}],['clean']] }
 });
 
-document.querySelector('form').addEventListener('submit', function() {
+document.getElementById('reservation-edit-form').addEventListener('submit', function() {
     const html = contractQuill.root.innerHTML;
     document.getElementById('contract_message_input').value = html === '<p><br></p>' ? '' : html;
 });
