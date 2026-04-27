@@ -94,11 +94,11 @@
                         <span class="text-gray-400">→ {{ $reservation->end_date->format('d/m/Y') }}</span>
                     </td>
                     <td class="px-4 py-3 text-gray-600">
-                        @foreach($reservation->equipments->take(2) as $equip)
-                            <span class="text-xs">{{ $equip->name }}</span>@if(!$loop->last),@endif
+                        @foreach($reservation->items->take(2) as $item)
+                            <span class="text-xs">{{ $item->equipment->name }}</span>@if(!$loop->last),@endif
                         @endforeach
-                        @if($reservation->equipments->count() > 2)
-                            <span class="text-xs text-gray-400">+{{ $reservation->equipments->count() - 2 }}</span>
+                        @if($reservation->items->count() > 2)
+                            <span class="text-xs text-gray-400">+{{ $reservation->items->count() - 2 }}</span>
                         @endif
                     </td>
                     <td class="px-4 py-3 font-semibold text-gray-800">{{ number_format($reservation->total_amount, 2, ',', ' ') }} €</td>
