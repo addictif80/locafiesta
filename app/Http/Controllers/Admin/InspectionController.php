@@ -38,7 +38,7 @@ class InspectionController extends Controller
             abort_unless($reservation->departureInspection, 400, 'L\'état des lieux de départ doit être fait en premier.');
         }
 
-        $reservation->load(['items.equipment.checklistItems.damageScaleItems', 'departureInspection.items']);
+        $reservation->load(['items.equipment.checklistItems', 'items.equipment.damageScaleItems', 'departureInspection.items']);
         return view('admin.inspections.create', compact('reservation', 'type'));
     }
 
