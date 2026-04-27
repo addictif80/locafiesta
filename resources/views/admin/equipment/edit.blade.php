@@ -10,7 +10,7 @@
     <h2 class="text-xl font-semibold text-gray-800">Modifier : {{ $equipment->name }}</h2>
 </div>
 
-<form method="POST" action="{{ route('admin.materiel.update', $equipment) }}" enctype="multipart/form-data">
+<form id="equipment-edit-form" method="POST" action="{{ route('admin.materiel.update', $equipment) }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -109,6 +109,7 @@
                     <div id="photo-preview" class="grid grid-cols-4 gap-3 mt-3"></div>
                 </div>
             </div>
+            </form>{{-- fin formulaire principal --}}
 
             <!-- Checklist état des lieux -->
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
@@ -251,7 +252,7 @@
                         <label for="daily_rate" class="block text-sm font-medium text-gray-700 mb-1">Tarif journalier (€) <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="number" id="daily_rate" name="daily_rate" value="{{ old('daily_rate', $equipment->daily_rate) }}"
-                                   step="0.01" min="0"
+                                   step="0.01" min="0" form="equipment-edit-form"
                                    class="w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('daily_rate') border-red-400 @enderror">
                             <span class="absolute right-3 top-2.5 text-gray-400 text-sm">€</span>
                         </div>
@@ -264,7 +265,7 @@
                         <label for="deposit_amount" class="block text-sm font-medium text-gray-700 mb-1">Caution (€)</label>
                         <div class="relative">
                             <input type="number" id="deposit_amount" name="deposit_amount" value="{{ old('deposit_amount', $equipment->deposit_amount) }}"
-                                   step="0.01" min="0"
+                                   step="0.01" min="0" form="equipment-edit-form"
                                    class="w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('deposit_amount') border-red-400 @enderror">
                             <span class="absolute right-3 top-2.5 text-gray-400 text-sm">€</span>
                         </div>
@@ -283,6 +284,7 @@
                 <label class="flex items-center gap-3 cursor-pointer">
                     <input type="checkbox" id="is_active" name="is_active" value="1"
                            {{ old('is_active', $equipment->is_active) ? 'checked' : '' }}
+                           form="equipment-edit-form"
                            class="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-300">
                     <span class="text-sm font-medium text-gray-700">Matériel actif</span>
                 </label>
@@ -290,7 +292,7 @@
 
             <!-- Actions -->
             <div class="flex flex-col gap-2">
-                <button type="submit"
+                <button type="submit" form="equipment-edit-form"
                         class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 rounded-lg text-sm transition">
                     <i class="fas fa-save mr-2"></i> Enregistrer les modifications
                 </button>
@@ -301,7 +303,6 @@
             </div>
         </div>
     </div>
-</form>
 @endsection
 
 @push('scripts')
