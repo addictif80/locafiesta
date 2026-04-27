@@ -34,10 +34,10 @@
                     </div>
 
                     <div>
-                        <label for="internal_reference" class="block text-sm font-medium text-gray-700 mb-1">Référence interne</label>
-                        <input type="text" id="internal_reference" name="internal_reference" value="{{ old('internal_reference', $equipment->internal_reference) }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('internal_reference') border-red-400 @enderror">
-                        @error('internal_reference')
+                        <label for="reference" class="block text-sm font-medium text-gray-700 mb-1">Référence interne <span class="text-red-500">*</span></label>
+                        <input type="text" id="reference" name="reference" value="{{ old('reference', $equipment->reference) }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('reference') border-red-400 @enderror">
+                        @error('reference')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
@@ -63,23 +63,22 @@
                     @foreach($equipment->photos as $photo)
                     <div class="relative group">
                         <img src="{{ Storage::url($photo->path) }}" alt=""
-                             class="w-full aspect-square object-cover rounded-lg border-2 {{ $photo->is_main ? 'border-orange-400' : 'border-gray-200' }}">
-                        @if($photo->is_main)
+                             class="w-full aspect-square object-cover rounded-lg border-2 {{ $photo->is_primary ? 'border-orange-400' : 'border-gray-200' }}">
+                        @if($photo->is_primary)
                             <span class="absolute top-1 left-1 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-medium">
                                 Principale
                             </span>
                         @endif
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition rounded-lg flex items-center justify-center gap-2">
-                            @if(!$photo->is_main)
-                            <form method="POST" action="{{ route('admin.materiel.photos.setMain', [$equipment, $photo]) }}">
+                            @if(!$photo->is_primary)
+                            <form method="POST" action="{{ route('admin.equipment.photo.primary', $photo) }}">
                                 @csrf
-                                @method('PATCH')
                                 <button type="submit" class="bg-orange-500 text-white text-xs px-2 py-1 rounded hover:bg-orange-600" title="Définir comme principale">
                                     <i class="fas fa-star"></i>
                                 </button>
                             </form>
                             @endif
-                            <form method="POST" action="{{ route('admin.materiel.photos.destroy', [$equipment, $photo]) }}"
+                            <form method="POST" action="{{ route('admin.equipment.photo.delete', $photo) }}"
                                   onsubmit="return confirm('Supprimer cette photo ?')">
                                 @csrf
                                 @method('DELETE')
@@ -127,7 +126,7 @@
                                 <p class="text-xs text-gray-500 mt-0.5">{{ $item->description }}</p>
                             @endif
                         </div>
-                        <form method="POST" action="{{ route('admin.materiel.checklist.destroy', [$equipment, $item]) }}"
+                        <form method="POST" action="{{ route('admin.equipment.checklist.destroy', $item) }}"
                               onsubmit="return confirm('Supprimer cet élément ?')">
                             @csrf
                             @method('DELETE')
@@ -143,7 +142,7 @@
                 @endif
 
                 <!-- Formulaire ajout -->
-                <form method="POST" action="{{ route('admin.materiel.checklist.store', $equipment) }}"
+                <form method="POST" action="{{ route('admin.equipment.checklist.store', $equipment) }}"
                       class="border border-gray-200 rounded-lg p-4 bg-gray-50">
                     @csrf
                     <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Ajouter un élément</p>
@@ -172,7 +171,7 @@
                     <i class="fas fa-triangle-exclamation text-orange-400 mr-2"></i>Barème dégradations
                 </h3>
 
-                @if($equipment->degradationItems->count())
+                @if($equipment->damageScaleItems->count())
                 <div class="overflow-x-auto mb-4">
                     <table class="min-w-full text-sm">
                         <thead>
@@ -184,13 +183,13 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @foreach($equipment->degradationItems as $item)
+                            @foreach($equipment->damageScaleItems as $item)
                             <tr>
                                 <td class="py-2 pr-4 font-medium text-gray-800">{{ $item->label }}</td>
                                 <td class="py-2 pr-4 text-gray-500">{{ $item->description ?? '—' }}</td>
                                 <td class="py-2 pr-4 text-right font-medium text-gray-800">{{ number_format($item->amount, 2, ',', ' ') }} €</td>
                                 <td class="py-2">
-                                    <form method="POST" action="{{ route('admin.materiel.degradations.destroy', [$equipment, $item]) }}"
+                                    <form method="POST" action="{{ route('admin.equipment.damage-scale.destroy', $item) }}"
                                           onsubmit="return confirm('Supprimer ce barème ?')">
                                         @csrf
                                         @method('DELETE')
@@ -209,7 +208,7 @@
                 @endif
 
                 <!-- Formulaire ajout -->
-                <form method="POST" action="{{ route('admin.materiel.degradations.store', $equipment) }}"
+                <form method="POST" action="{{ route('admin.equipment.damage-scale.store', $equipment) }}"
                       class="border border-gray-200 rounded-lg p-4 bg-gray-50">
                     @csrf
                     <p class="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Ajouter un barème</p>
@@ -262,14 +261,14 @@
                     </div>
 
                     <div>
-                        <label for="deposit" class="block text-sm font-medium text-gray-700 mb-1">Caution (€)</label>
+                        <label for="deposit_amount" class="block text-sm font-medium text-gray-700 mb-1">Caution (€)</label>
                         <div class="relative">
-                            <input type="number" id="deposit" name="deposit" value="{{ old('deposit', $equipment->deposit) }}"
+                            <input type="number" id="deposit_amount" name="deposit_amount" value="{{ old('deposit_amount', $equipment->deposit_amount) }}"
                                    step="0.01" min="0"
-                                   class="w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('deposit') border-red-400 @enderror">
+                                   class="w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('deposit_amount') border-red-400 @enderror">
                             <span class="absolute right-3 top-2.5 text-gray-400 text-sm">€</span>
                         </div>
-                        @error('deposit')
+                        @error('deposit_amount')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                     </div>

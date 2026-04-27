@@ -33,10 +33,10 @@
                     </div>
 
                     <div>
-                        <label for="internal_reference" class="block text-sm font-medium text-gray-700 mb-1">Référence interne</label>
-                        <input type="text" id="internal_reference" name="internal_reference" value="{{ old('internal_reference') }}"
-                               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('internal_reference') border-red-400 @enderror">
-                        @error('internal_reference')
+                        <label for="reference" class="block text-sm font-medium text-gray-700 mb-1">Référence interne</label>
+                        <input type="text" id="reference" name="reference" value="{{ old('reference') }}"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('reference') border-red-400 @enderror">
+                        @error('reference')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
@@ -99,14 +99,14 @@
                     </div>
 
                     <div>
-                        <label for="deposit" class="block text-sm font-medium text-gray-700 mb-1">Caution (€)</label>
+                        <label for="deposit_amount" class="block text-sm font-medium text-gray-700 mb-1">Caution (€)</label>
                         <div class="relative">
-                            <input type="number" id="deposit" name="deposit" value="{{ old('deposit', 0) }}"
+                            <input type="number" id="deposit_amount" name="deposit_amount" value="{{ old('deposit', 0) }}"
                                    step="0.01" min="0"
-                                   class="w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('deposit') border-red-400 @enderror">
+                                   class="w-full border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:ring-2 focus:ring-orange-300 focus:border-orange-400 outline-none @error('deposit_amount') border-red-400 @enderror">
                             <span class="absolute right-3 top-2.5 text-gray-400 text-sm">€</span>
                         </div>
-                        @error('deposit')
+                        @error('deposit_amount')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                     </div>

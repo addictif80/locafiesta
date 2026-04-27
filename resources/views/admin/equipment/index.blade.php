@@ -27,11 +27,11 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-                @forelse($equipments as $e)
+                @forelse($equipment as $e)
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3">
-                        @if($e->mainPhoto)
-                            <img src="{{ Storage::url($e->mainPhoto->path) }}" alt="{{ $e->name }}"
+                        @if($e->primaryPhoto)
+                            <img src="{{ Storage::url($e->primaryPhoto->path) }}" alt="{{ $e->name }}"
                                  class="w-12 h-12 object-cover rounded-lg border border-gray-200">
                         @else
                             <div class="w-12 h-12 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
@@ -40,9 +40,9 @@
                         @endif
                     </td>
                     <td class="px-4 py-3 font-medium text-gray-800">{{ $e->name }}</td>
-                    <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ $e->internal_reference }}</td>
+                    <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ $e->reference }}</td>
                     <td class="px-4 py-3 text-gray-700">{{ number_format($e->daily_rate, 2, ',', ' ') }} €</td>
-                    <td class="px-4 py-3 text-gray-700">{{ number_format($e->deposit, 2, ',', ' ') }} €</td>
+                    <td class="px-4 py-3 text-gray-700">{{ number_format($e->deposit_amount, 2, ',', ' ') }} €</td>
                     <td class="px-4 py-3">
                         @if($e->is_active)
                             <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
@@ -54,7 +54,7 @@
                             </span>
                         @endif
                     </td>
-                    <td class="px-4 py-3 text-gray-600">{{ $e->reservations_count ?? 0 }}</td>
+                    <td class="px-4 py-3 text-gray-600">{{ $e->reservation_items_count ?? 0 }}</td>
                     <td class="px-4 py-3">
                         <div class="flex items-center justify-end gap-2">
                             <a href="{{ route('admin.materiel.show', $e) }}"
@@ -89,9 +89,9 @@
         </table>
     </div>
 
-    @if($equipments->hasPages())
+    @if($equipment->hasPages())
     <div class="px-4 py-3 border-t border-gray-100">
-        {{ $equipments->links() }}
+        {{ $equipment->links() }}
     </div>
     @endif
 </div>

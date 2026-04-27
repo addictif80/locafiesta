@@ -56,7 +56,7 @@ class EquipmentController extends Controller
             }
         }
 
-        return redirect()->route('admin.equipment.show', $equipment)
+        return redirect()->route('admin.materiel.show', $equipment)
             ->with('success', 'Matériel créé avec succès.');
     }
 
@@ -105,14 +105,14 @@ class EquipmentController extends Controller
             }
         }
 
-        return redirect()->route('admin.equipment.show', $equipment)
+        return redirect()->route('admin.materiel.show', $equipment)
             ->with('success', 'Matériel mis à jour.');
     }
 
     public function destroy(Equipment $equipment)
     {
         $equipment->delete();
-        return redirect()->route('admin.equipment.index')
+        return redirect()->route('admin.materiel.index')
             ->with('success', 'Matériel supprimé.');
     }
 

@@ -50,8 +50,8 @@
                 @foreach($equipment->photos as $photo)
                 <div class="relative aspect-square">
                     <img src="{{ Storage::url($photo->path) }}" alt="{{ $equipment->name }}"
-                         class="w-full h-full object-cover rounded-lg border-2 {{ $photo->is_main ? 'border-orange-400' : 'border-gray-200' }}">
-                    @if($photo->is_main)
+                         class="w-full h-full object-cover rounded-lg border-2 {{ $photo->is_primary ? 'border-orange-400' : 'border-gray-200' }}">
+                    @if($photo->is_primary)
                         <span class="absolute top-1 left-1 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded font-medium">
                             <i class="fas fa-star mr-0.5"></i> Principale
                         </span>
@@ -106,7 +106,7 @@
             <h3 class="text-base font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-100">
                 <i class="fas fa-triangle-exclamation text-orange-400 mr-2"></i>Barème dégradations
             </h3>
-            @if($equipment->degradationItems->count())
+            @if($equipment->damageScaleItems->count())
             <div class="overflow-x-auto">
                 <table class="min-w-full text-sm">
                     <thead>
@@ -117,7 +117,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @foreach($equipment->degradationItems as $item)
+                        @foreach($equipment->damageScaleItems as $item)
                         <tr>
                             <td class="px-3 py-2.5 font-medium text-gray-800">{{ $item->label }}</td>
                             <td class="px-3 py-2.5 text-gray-500">{{ $item->description ?? '—' }}</td>
@@ -145,7 +145,7 @@
             <dl class="space-y-3 text-sm">
                 <div>
                     <dt class="text-xs font-medium text-gray-400 uppercase tracking-wide">Référence interne</dt>
-                    <dd class="mt-1 font-mono text-gray-700">{{ $equipment->internal_reference ?? '—' }}</dd>
+                    <dd class="mt-1 font-mono text-gray-700">{{ $equipment->reference ?? '—' }}</dd>
                 </div>
                 <div>
                     <dt class="text-xs font-medium text-gray-400 uppercase tracking-wide">Tarif journalier</dt>
@@ -153,7 +153,7 @@
                 </div>
                 <div>
                     <dt class="text-xs font-medium text-gray-400 uppercase tracking-wide">Caution</dt>
-                    <dd class="mt-1 font-semibold text-gray-800">{{ number_format($equipment->deposit, 2, ',', ' ') }} €</dd>
+                    <dd class="mt-1 font-semibold text-gray-800">{{ number_format($equipment->deposit_amount, 2, ',', ' ') }} €</dd>
                 </div>
                 <div>
                     <dt class="text-xs font-medium text-gray-400 uppercase tracking-wide">Statut</dt>
@@ -171,7 +171,7 @@
                 </div>
                 <div>
                     <dt class="text-xs font-medium text-gray-400 uppercase tracking-wide">Réservations</dt>
-                    <dd class="mt-1 text-gray-700">{{ $equipment->reservations_count ?? $equipment->reservations->count() }}</dd>
+                    <dd class="mt-1 text-gray-700">{{ $equipment->reservationItems()->count() }}</dd>
                 </div>
                 <div>
                     <dt class="text-xs font-medium text-gray-400 uppercase tracking-wide">Créé le</dt>
