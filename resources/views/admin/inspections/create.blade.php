@@ -59,7 +59,7 @@
                             <div class="flex gap-2">
                                 @foreach(['good' => ['label' => 'Bon état', 'color' => 'green'], 'worn' => ['label' => 'Usure', 'color' => 'yellow'], 'damaged' => ['label' => 'Dégradé', 'color' => 'red'], 'missing' => ['label' => 'Manquant', 'color' => 'gray']] as $value => $meta)
                                 <label class="cursor-pointer">
-                                    <input type="radio" name="items[{{ $loop->parent->parent->index * 100 + $loop->parent->index }}][condition]"
+                                    <input type="radio" name="items[{{ $loop->parent->index * 100 + $loop->index }}][condition]"
                                            value="{{ $value }}" class="sr-only peer" required
                                            {{ $value === 'good' ? 'checked' : '' }}>
                                     <span class="px-3 py-1.5 text-xs font-medium rounded-full border-2 border-transparent
@@ -71,8 +71,8 @@
                                 @endforeach
                             </div>
                         </div>
-                        <input type="hidden" name="items[{{ $loop->parent->parent->index * 100 + $loop->parent->index }}][checklist_item_id]" value="{{ $checklistItem->id }}">
-                        <textarea name="items[{{ $loop->parent->parent->index * 100 + $loop->parent->index }}][notes]"
+                        <input type="hidden" name="items[{{ $loop->parent->index * 100 + $loop->index }}][checklist_item_id]" value="{{ $checklistItem->id }}">
+                        <textarea name="items[{{ $loop->parent->index * 100 + $loop->index }}][notes]"
                                   placeholder="Observations (optionnel)"
                                   class="mt-3 w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-1 focus:ring-orange-400 resize-none" rows="2"></textarea>
                     </div>
