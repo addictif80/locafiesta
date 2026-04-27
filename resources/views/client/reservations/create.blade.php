@@ -309,7 +309,11 @@ function reservationWizard() {
             const idx = this.form.equipment_ids.indexOf(id);
             if (idx === -1) this.form.equipment_ids.push(id);
             else this.form.equipment_ids.splice(idx, 1);
-            this.refreshCalendar();
+            if (this.form.equipment_ids.length > 0 && !calendar) {
+                this.$nextTick(() => this.initCalendar());
+            } else {
+                this.refreshCalendar();
+            }
         },
         formatDate(d) {
             if (!d) return '';
@@ -338,7 +342,6 @@ function reservationWizard() {
         nextStep() {
             if (this.currentStep === 1 && (this.form.equipment_ids.length === 0 || !this.form.start_date)) return;
             this.currentStep++;
-            if (this.currentStep === 2 && !calendar) this.$nextTick(() => this.initCalendar());
         },
         prevStep() { this.currentStep--; },
         initCalendar() {
