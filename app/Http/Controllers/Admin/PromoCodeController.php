@@ -16,7 +16,7 @@ class PromoCodeController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'code' => 'required|string|max:50|unique:promo_codes,code',
             'type' => 'required|in:percentage,fixed',
             'value' => 'required|numeric|min:0',
@@ -26,7 +26,7 @@ class PromoCodeController extends Controller
             'description' => 'nullable|string|max:255',
         ]);
 
-        PromoCode::create($request->validated() + ['is_active' => true]);
+        PromoCode::create($validated + ['is_active' => true]);
         return back()->with('success', 'Code promo créé.');
     }
 
