@@ -159,8 +159,8 @@
         </tfoot>
     </table>
 
-    {{-- Financial conditions --}}
-    <div class="section-title">Conditions financières</div>
+    {{-- Financial conditions — starts on a new page --}}
+    <div class="section-title" style="page-break-before: always;">Conditions financières</div>
     <div class="conditions-grid">
         <div class="condition-item">
             <div class="condition-box">
