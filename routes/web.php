@@ -121,6 +121,12 @@ Route::prefix('espace-client')->name('client.')->middleware(['auth', 'client'])-
 
     Route::get('/factures', [Client\InvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/factures/{invoice}/telecharger', [Client\InvoiceController::class, 'download'])->name('invoices.download');
+
+    Route::get('/etats-des-lieux/{inspection}/pdf', function (\App\Models\Inspection $inspection) {
+        abort_unless($inspection->reservation->client_id === auth()->id(), 403);
+        return app(\App\Services\PdfService::class)->generateInspectionReport($inspection)
+            ->download('etat-lieux-' . $inspection->type . '.pdf');
+    })->name('inspections.pdf');
 });
 
 // Stripe webhook (no CSRF)
