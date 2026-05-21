@@ -3,6 +3,34 @@
 @section('title', $client->first_name . ' ' . $client->last_name)
 
 @section('content')
+@php $lateReservations = $client->reservations->filter(fn($r) => $r->isLate()); @endphp
+
+@if($lateReservations->isNotEmpty())
+<div class="mb-5 bg-red-50 border border-red-300 rounded-xl overflow-hidden">
+    <div class="px-5 py-3 bg-red-600 flex items-center gap-3 text-white">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span class="font-semibold text-sm">{{ $lateReservations->count() }} retour(s) en retard pour ce client</span>
+    </div>
+    <div class="divide-y divide-red-100">
+        @foreach($lateReservations as $res)
+        <div class="px-5 py-3 flex items-center justify-between">
+            <div>
+                <span class="font-mono text-sm font-semibold text-gray-800">{{ $res->reference }}</span>
+                <span class="ml-3 text-sm text-red-600 font-medium">
+                    Dû le {{ $res->end_date->format('d/m/Y') }} à {{ substr($res->end_time, 0, 5) }}
+                    — <strong>{{ $res->days_late }} jour(s) de retard</strong>
+                </span>
+            </div>
+            <a href="{{ route('admin.reservations.show', $res) }}"
+               class="text-sm bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700">
+                <i class="fas fa-eye mr-1"></i>Voir
+            </a>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 <div class="flex items-center gap-3 mb-6">
     <a href="{{ route('admin.clients.index') }}" class="text-gray-400 hover:text-gray-600 transition">
         <i class="fas fa-arrow-left"></i>
@@ -14,6 +42,14 @@
         </span>
     @endif
     <div class="ml-auto flex items-center gap-2">
+        <form method="POST" action="{{ route('admin.clients.impersonate', $client) }}">
+            @csrf
+            <button type="submit"
+                    class="inline-flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+                    title="Se connecter en tant que ce client">
+                <i class="fas fa-user-secret"></i> Impersonnifier
+            </button>
+        </form>
         <a href="{{ route('admin.clients.edit', $client) }}"
            class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition">
             <i class="fas fa-pencil"></i> Modifier
@@ -45,10 +81,18 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($client->reservations ?? [] as $reservation)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 font-mono text-xs text-gray-700">{{ $reservation->reference }}</td>
+                        <tr class="{{ $reservation->isLate() ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50' }}">
+                            <td class="px-4 py-3 font-mono text-xs text-gray-700">
+                                {{ $reservation->reference }}
+                                @if($reservation->isLate())
+                                    <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-bold bg-red-600 text-white">EN RETARD</span>
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-gray-600">
                                 {{ $reservation->start_date->format('d/m/Y') }} → {{ $reservation->end_date->format('d/m/Y') }}
+                                @if($reservation->isLate())
+                                    <span class="ml-1 text-red-600 text-xs font-medium">({{ $reservation->days_late }}j de retard)</span>
+                                @endif
                             </td>
                             <td class="px-4 py-3 text-gray-700 font-medium">{{ number_format($reservation->total_amount, 2, ',', ' ') }} €</td>
                             <td class="px-4 py-3">

@@ -54,6 +54,19 @@
         </div>
     </nav>
 
+    @if(session('impersonating_admin_id'))
+    <div class="bg-amber-400 text-gray-900 py-2 border-b border-amber-500">
+        <div class="max-w-6xl mx-auto px-4 flex items-center justify-between text-sm font-medium">
+            <span><i class="fas fa-user-secret mr-2"></i>Mode impersonnification — vous naviguez en tant que <strong>{{ auth()->user()->full_name }}</strong></span>
+            <form method="POST" action="{{ route('impersonate.stop') }}">
+                @csrf
+                <button type="submit" class="bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-arrow-left mr-1"></i>Revenir à l'admin
+                </button>
+            </form>
+        </div>
+    </div>
+    @endif
     @if(!empty($clientLateReservations) && $clientLateReservations->isNotEmpty())
     <div class="bg-red-600 text-white py-2">
         <div class="max-w-6xl mx-auto px-4 flex items-center gap-3 text-sm">
