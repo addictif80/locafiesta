@@ -17,7 +17,7 @@ class Reservation extends Model
         'stripe_payment_intent_id', 'stripe_charge_id', 'deposit_paid_at',
         'use_different_address', 'use_address', 'use_postal_code', 'use_city',
         'cancelled_at', 'cancellation_reason', 'deposit_refunded', 'deposit_refunded_at',
-        'admin_notes', 'contract_message',
+        'late_notified_at', 'admin_notes', 'contract_message',
     ];
 
     protected $casts = [
@@ -26,6 +26,7 @@ class Reservation extends Model
         'deposit_paid_at' => 'datetime',
         'cancelled_at' => 'datetime',
         'deposit_refunded_at' => 'datetime',
+        'late_notified_at' => 'datetime',
         'use_different_address' => 'boolean',
         'deposit_refunded' => 'boolean',
         'subtotal' => 'decimal:2',
@@ -64,6 +65,19 @@ class Reservation extends Model
     public function canBeCancelledWithRefund(): bool
     {
         return Carbon::now()->lt($this->start_date->setTimeFromTimeString($this->start_time)->subHours(48));
+    }
+
+    public function isLate(): bool
+    {
+        if ($this->status !== 'in_progress') return false;
+        $due = \Carbon\Carbon::parse($this->end_date->format('Y-m-d') . ' ' . $this->end_time);
+        return now()->greaterThan($due);
+    }
+
+    public function getDaysLateAttribute(): int
+    {
+        if (!$this->isLate()) return 0;
+        return (int) $this->end_date->diffInDays(now()->startOfDay());
     }
 
     public function isPending(): bool { return $this->status === 'pending_payment'; }

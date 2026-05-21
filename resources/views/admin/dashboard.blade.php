@@ -1,6 +1,47 @@
 @extends('layouts.admin')
 @section('title', 'Tableau de bord')
 @section('content')
+
+@if($lateReservations->isNotEmpty())
+<div class="mb-6 bg-red-50 border border-red-200 rounded-xl overflow-hidden">
+    <div class="px-5 py-4 bg-red-600 flex items-center justify-between">
+        <div class="flex items-center gap-3 text-white">
+            <i class="fas fa-exclamation-triangle text-lg"></i>
+            <span class="font-semibold">{{ $lateReservations->count() }} retour(s) en retard</span>
+        </div>
+        <a href="{{ route('admin.reservations.index', ['status' => 'in_progress']) }}" class="text-red-100 hover:text-white text-sm underline">Voir toutes les réservations en cours</a>
+    </div>
+    <div class="divide-y divide-red-100">
+        @foreach($lateReservations as $res)
+        <div class="px-5 py-3 flex items-center justify-between hover:bg-red-100 transition-colors">
+            <div class="flex items-center gap-4">
+                <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-clock text-red-600 text-sm"></i>
+                </div>
+                <div>
+                    <div class="text-sm font-semibold text-gray-800">
+                        {{ $res->client->full_name }}
+                        <span class="font-mono text-gray-500 font-normal ml-2">{{ $res->reference }}</span>
+                    </div>
+                    <div class="text-xs text-red-600 font-medium">
+                        Dû le {{ $res->end_date->format('d/m/Y') }} à {{ substr($res->end_time, 0, 5) }}
+                        — <strong>{{ $res->days_late }} jour(s) de retard</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs text-gray-500">{{ $res->items->count() }} matériel(s)</span>
+                <a href="{{ route('admin.reservations.show', $res) }}"
+                   class="text-sm bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700">
+                    <i class="fas fa-eye mr-1"></i>Voir
+                </a>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
     <div class="bg-white rounded-xl p-5 shadow-sm border">
         <div class="flex items-center justify-between mb-2">
