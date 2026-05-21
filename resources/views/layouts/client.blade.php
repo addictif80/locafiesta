@@ -54,6 +54,23 @@
         </div>
     </nav>
 
+    @if(!empty($clientLateReservations) && $clientLateReservations->isNotEmpty())
+    <div class="bg-red-600 text-white py-2">
+        <div class="max-w-6xl mx-auto px-4 flex items-center gap-3 text-sm">
+            <i class="fas fa-exclamation-triangle flex-shrink-0"></i>
+            <span>
+                @if($clientLateReservations->count() === 1)
+                    Votre location <strong>{{ $clientLateReservations->first()->reference }}</strong>
+                    est en retard depuis le {{ $clientLateReservations->first()->end_date->format('d/m/Y') }}.
+                    <a href="{{ route('client.reservations.show', $clientLateReservations->first()) }}" class="underline font-semibold ml-1">Voir la réservation</a>
+                @else
+                    <strong>{{ $clientLateReservations->count() }} locations</strong> sont en retard de retour.
+                    <a href="{{ route('client.reservations.index') }}" class="underline font-semibold ml-1">Voir mes réservations</a>
+                @endif
+            </span>
+        </div>
+    </div>
+    @endif
     <main class="max-w-6xl mx-auto px-4 py-8">
         @if($errors->any())
         <div class="mb-4 bg-red-50 border border-red-200 rounded-lg p-4">

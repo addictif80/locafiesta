@@ -22,8 +22,15 @@ class DashboardController extends Controller
             'pending_returns' => Reservation::where('status', 'in_progress')->whereDate('end_date', '<=', today())->count(),
         ];
 
+        $lateReservations = Reservation::with(['client', 'items.equipment'])
+            ->where('status', 'in_progress')
+            ->whereDate('end_date', '<', today())
+            ->orderBy('end_date')
+            ->get();
+
         $upcoming = Reservation::with(['client', 'items.equipment'])
             ->whereIn('status', ['confirmed', 'in_progress'])
+            ->whereDate('end_date', '>=', today())
             ->orderBy('start_date')
             ->limit(10)
             ->get();
@@ -33,6 +40,6 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'upcoming', 'recent_reservations'));
+        return view('admin.dashboard', compact('stats', 'upcoming', 'recent_reservations', 'lateReservations'));
     }
 }

@@ -24,6 +24,9 @@
             </a>
             <a href="{{ route('admin.reservations.index') }}" class="nav-link {{ request()->routeIs('admin.reservations.*') ? 'bg-orange-600' : 'hover:bg-gray-800' }} flex items-center px-3 py-2 rounded-lg text-sm">
                 <i class="fas fa-calendar-check w-5 mr-3"></i>Réservations
+                @if(!empty($adminLateReturnsCount) && $adminLateReturnsCount > 0)
+                <span class="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[20px] text-center animate-pulse">{{ $adminLateReturnsCount }}</span>
+                @endif
             </a>
             <a href="{{ route('admin.materiel.index') }}" class="nav-link {{ request()->routeIs('admin.materiel.*') ? 'bg-orange-600' : 'hover:bg-gray-800' }} flex items-center px-3 py-2 rounded-lg text-sm">
                 <i class="fas fa-boxes-stacked w-5 mr-3"></i>Matériel

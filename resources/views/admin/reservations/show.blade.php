@@ -2,6 +2,18 @@
 @section('title', 'Réservation ' . $reservation->reference)
 @section('content')
 <div class="max-w-5xl mx-auto" x-data="{ cancelModal: false }">
+    @if($reservation->isLate())
+    <div class="mb-5 bg-red-50 border border-red-300 rounded-xl px-5 py-4 flex items-start gap-4">
+        <i class="fas fa-exclamation-triangle text-red-500 text-xl mt-0.5 flex-shrink-0"></i>
+        <div>
+            <p class="font-semibold text-red-700">Retour en retard</p>
+            <p class="text-sm text-red-600 mt-0.5">
+                Cette réservation aurait dû être retournée le <strong>{{ $reservation->end_date->format('d/m/Y') }} à {{ substr($reservation->end_time, 0, 5) }}</strong>.
+                Retard : <strong>{{ $reservation->days_late }} jour(s)</strong>.
+            </p>
+        </div>
+    </div>
+    @endif
     <div class="mb-6 flex items-start justify-between">
         <div>
             <a href="{{ route('admin.reservations.index') }}" class="text-sm text-orange-500 hover:underline"><i class="fas fa-arrow-left mr-1"></i>Réservations</a>
