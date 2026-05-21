@@ -49,16 +49,19 @@ class PdfService
 
     public function generateInspectionReport(Inspection $inspection): \Barryvdh\DomPDF\PDF
     {
-        $inspection->load(['reservation.client', 'items.checklistItem', 'photos', 'admin']);
+        $inspection->load(['reservation.client', 'reservation.items.equipment', 'items.checklistItem', 'photos', 'admin']);
+
+        $reservation = $inspection->reservation;
 
         $company = [
             'name' => Setting::get('company_name', 'LocaFiesta'),
             'address' => Setting::get('company_address', ''),
+            'siret' => Setting::get('company_siret', ''),
         ];
 
         $pdfMessage = $inspection->pdf_message ?: Setting::get('inspection_message_default', '');
 
-        return Pdf::loadView('pdf.inspection', compact('inspection', 'company', 'pdfMessage'))
+        return Pdf::loadView('pdf.inspection', compact('inspection', 'reservation', 'company', 'pdfMessage'))
             ->setPaper('a4', 'portrait');
     }
 }
