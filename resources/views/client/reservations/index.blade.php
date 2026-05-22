@@ -6,10 +6,16 @@
 <div class="space-y-6">
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-900">Mes réservations</h1>
+        @if($clientHasLateReturns)
+        <span class="inline-flex items-center gap-2 bg-gray-200 text-gray-500 font-semibold px-4 py-2.5 rounded-lg text-sm cursor-not-allowed" title="Retour en retard non clôturé">
+            <i class="fas fa-ban"></i> Nouvelle réservation impossible
+        </span>
+        @else
         <a href="{{ route('client.reservations.create') }}"
            class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2.5 rounded-lg text-sm transition-colors">
             <i class="fas fa-plus"></i> Nouvelle réservation
         </a>
+        @endif
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -18,10 +24,12 @@
             <i class="fas fa-calendar-alt text-5xl text-gray-300 mb-4"></i>
             <p class="text-gray-500 text-lg mb-2">Aucune réservation</p>
             <p class="text-gray-400 text-sm mb-6">Vous n'avez pas encore effectué de réservation.</p>
+            @if(!$clientHasLateReturns)
             <a href="{{ route('client.reservations.create') }}"
                class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-5 py-2.5 rounded-lg transition-colors">
                 <i class="fas fa-plus"></i> Faire une réservation
             </a>
+            @endif
         </div>
         @else
         <div class="overflow-x-auto">

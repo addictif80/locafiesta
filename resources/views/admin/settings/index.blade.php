@@ -45,6 +45,14 @@
                     <input type="number" name="cancellation_hours" value="{{ $settings['cancellation_hours']->value ?? 48 }}" min="1" required class="w-full border rounded-lg px-3 py-2 text-sm">
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Pénalité retard (€/jour)</label>
+                    <div class="relative">
+                        <input type="number" name="late_penalty_per_day" value="{{ $settings['late_penalty_per_day']->value ?? 0 }}" min="0" step="0.01" required class="w-full border rounded-lg px-3 py-2 text-sm pr-8">
+                        <span class="absolute right-3 top-2.5 text-gray-400 text-sm">€</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">Ajoutée automatiquement dans l'état des lieux de retour si retard.</p>
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Préfixe facture</label>
                     <input type="text" name="invoice_prefix" value="{{ $settings['invoice_prefix']->value ?? 'FAC' }}" maxlength="10" class="w-full border rounded-lg px-3 py-2 text-sm">
                 </div>

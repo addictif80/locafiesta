@@ -16,6 +16,15 @@
         <div class="text-sm text-gray-500 mt-1">En attente</div>
     </div>
     <div class="bg-white rounded-xl p-5 shadow-sm border">
+        @if($clientHasLateReturns)
+        <div class="flex items-center gap-3 h-full cursor-not-allowed opacity-60">
+            <div class="bg-gray-300 text-gray-500 p-3 rounded-xl"><i class="fas fa-ban text-lg"></i></div>
+            <div>
+                <div class="font-semibold text-gray-500">Nouvelle réservation impossible</div>
+                <div class="text-xs text-red-500">Retour en retard non clôturé</div>
+            </div>
+        </div>
+        @else
         <a href="{{ route('client.reservations.create') }}" class="flex items-center gap-3 h-full">
             <div class="bg-orange-500 text-white p-3 rounded-xl"><i class="fas fa-plus text-lg"></i></div>
             <div>
@@ -23,6 +32,7 @@
                 <div class="text-xs text-gray-500">Réserver du matériel</div>
             </div>
         </a>
+        @endif
     </div>
 </div>
 
@@ -57,9 +67,11 @@
         <div class="px-6 py-12 text-center">
             <i class="fas fa-calendar-xmark text-4xl text-gray-200 mb-4"></i>
             <p class="text-gray-500 mb-4">Vous n'avez pas encore de réservation.</p>
+            @if(!$clientHasLateReturns)
             <a href="{{ route('client.reservations.create') }}" class="bg-orange-500 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-orange-600">
                 Faire une réservation
             </a>
+            @endif
         </div>
         @endforelse
     </div>

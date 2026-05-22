@@ -28,6 +28,11 @@ class ReservationController extends Controller
 
     public function create()
     {
+        if ($this->hasLateReturn()) {
+            return redirect()->route('client.reservations.index')
+                ->with('error', 'Vous avez une réservation en retard. Veuillez la clôturer avant d\'effectuer une nouvelle réservation.');
+        }
+
         $equipment = Equipment::where('is_active', true)->with('photos', 'primaryPhoto')->get();
         return view('client.reservations.create', compact('equipment'));
     }
@@ -64,8 +69,21 @@ class ReservationController extends Controller
         ]);
     }
 
+    private function hasLateReturn(): bool
+    {
+        return auth()->user()->reservations()
+            ->where('status', 'in_progress')
+            ->whereDate('end_date', '<', today())
+            ->exists();
+    }
+
     public function store(Request $request)
     {
+        if ($this->hasLateReturn()) {
+            return redirect()->route('client.reservations.index')
+                ->with('error', 'Vous avez une réservation en retard. Veuillez la clôturer avant d\'effectuer une nouvelle réservation.');
+        }
+
         $user = auth()->user();
 
         $data = $request->validate([
