@@ -214,22 +214,22 @@
             @endif
         </div>
     </div>
-</div>
 
-{{-- Modal annulation --}}
-<div x-show="cancelModal" x-cloak class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full">
-        <h3 class="font-bold text-gray-800 mb-4">Annuler la réservation</h3>
-        <p class="text-sm text-gray-600 mb-4">Êtes-vous sûr de vouloir annuler la réservation {{ $reservation->reference }} ?</p>
-        <form method="POST" action="{{ route('admin.reservations.cancel', $reservation) }}">
-            @csrf
-            <textarea name="reason" placeholder="Raison de l'annulation (optionnel)"
-                      class="w-full border rounded-lg px-3 py-2 text-sm mb-4 resize-none" rows="3"></textarea>
-            <div class="flex gap-3">
-                <button type="button" @click="cancelModal = false" class="flex-1 border rounded-lg py-2 text-sm text-gray-700 hover:bg-gray-50">Retour</button>
-                <button type="submit" class="flex-1 bg-red-500 text-white rounded-lg py-2 text-sm font-medium hover:bg-red-600">Confirmer l'annulation</button>
-            </div>
-        </form>
+    {{-- Modal annulation --}}
+    <div x-show="cancelModal" x-cloak class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full">
+            <h3 class="font-bold text-gray-800 mb-4">Annuler la réservation</h3>
+            <p class="text-sm text-gray-600 mb-4">Êtes-vous sûr de vouloir annuler la réservation {{ $reservation->reference }} ?</p>
+            <form method="POST" action="{{ route('admin.reservations.cancel', $reservation) }}">
+                @csrf
+                <textarea name="reason" placeholder="Raison de l'annulation (optionnel)"
+                          class="w-full border rounded-lg px-3 py-2 text-sm mb-4 resize-none" rows="3"></textarea>
+                <div class="flex gap-3">
+                    <button type="button" @click="cancelModal = false" class="flex-1 border rounded-lg py-2 text-sm text-gray-700 hover:bg-gray-50">Retour</button>
+                    <button type="submit" class="flex-1 bg-red-500 text-white rounded-lg py-2 text-sm font-medium hover:bg-red-600">Confirmer l'annulation</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @endsection
