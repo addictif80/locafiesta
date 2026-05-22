@@ -7,8 +7,10 @@ use App\Models\Reservation;
 use App\Models\Equipment;
 use App\Models\User;
 use App\Models\PromoCode;
+use App\Mail\ReservationContractMail;
 use App\Services\ReservationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
 {
@@ -121,6 +123,16 @@ class ReservationController extends Controller
 
         return redirect()->route('admin.reservations.show', $reservation)
             ->with('success', 'Réservation annulée.');
+    }
+
+    public function sendContract(Reservation $reservation)
+    {
+        $reservation->load(['client', 'items.equipment']);
+
+        Mail::to($reservation->client->email)->send(new ReservationContractMail($reservation));
+
+        return redirect()->route('admin.reservations.show', $reservation)
+            ->with('success', 'Contrat envoyé par mail à ' . $reservation->client->email . '.');
     }
 
     public function destroy(Reservation $reservation)
