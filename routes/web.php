@@ -46,6 +46,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Clients
     Route::resource('clients', Admin\ClientController::class);
     Route::post('clients/{client}/blacklist', [Admin\ClientController::class, 'toggleBlacklist'])->name('clients.blacklist');
+    Route::post('clients/{client}/impersonate', [Admin\ImpersonationController::class, 'start'])->name('clients.impersonate');
 
     // Reservations
     Route::resource('reservations', Admin\ReservationController::class);
@@ -128,6 +129,9 @@ Route::prefix('espace-client')->name('client.')->middleware(['auth', 'client'])-
             ->download('etat-lieux-' . $inspection->type . '.pdf');
     })->name('inspections.pdf');
 });
+
+// Stop impersonation (accessible from client area)
+Route::post('/impersonate/stop', [Admin\ImpersonationController::class, 'stop'])->middleware('auth')->name('impersonate.stop');
 
 // Stripe webhook (no CSRF)
 Route::post('/webhook/stripe', [App\Http\Controllers\StripeWebhookController::class, 'handle'])->name('stripe.webhook');
