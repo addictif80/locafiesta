@@ -149,6 +149,32 @@
         </div>
         @endif
 
+        @if($type === 'return' && $reservation->isLate())
+        @php $daysLate = $reservation->days_late; $totalPenalty = $daysLate * $latePenaltyPerDay; @endphp
+        <div class="bg-red-50 border border-red-300 rounded-xl mb-6 overflow-hidden">
+            <div class="px-5 py-4 bg-red-600 flex items-center gap-3 text-white">
+                <i class="fas fa-clock text-lg"></i>
+                <span class="font-semibold">Retour en retard — pénalité appliquée automatiquement</span>
+            </div>
+            <div class="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="text-sm text-red-700 space-y-1">
+                    <p>Retour prévu le <strong>{{ $reservation->end_date->format('d/m/Y') }}</strong> à <strong>{{ substr($reservation->end_time, 0, 5) }}</strong></p>
+                    <p>Retard constaté : <strong>{{ $daysLate }} jour(s)</strong></p>
+                    <p>Tarif pénalité : <strong>{{ number_format($latePenaltyPerDay, 2, ',', ' ') }} €/jour</strong></p>
+                </div>
+                @if($latePenaltyPerDay > 0)
+                <div class="text-center bg-white border-2 border-red-400 rounded-xl px-6 py-3">
+                    <div class="text-xs text-red-600 font-semibold uppercase tracking-wide mb-1">Pénalité totale</div>
+                    <div class="text-3xl font-bold text-red-600">{{ number_format($totalPenalty, 2, ',', ' ') }} €</div>
+                    <div class="text-xs text-gray-400 mt-1">Ajoutée aux frais de dégradation</div>
+                </div>
+                @else
+                <div class="text-sm text-red-500 italic">Aucun tarif de pénalité configuré dans les paramètres.</div>
+                @endif
+            </div>
+        </div>
+        @endif
+
         @if($type === 'return')
         {{-- Dégradations --}}
         <div class="bg-white rounded-xl shadow-sm border mb-6">

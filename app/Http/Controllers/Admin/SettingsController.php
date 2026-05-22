@@ -24,6 +24,7 @@ class SettingsController extends Controller
             'company_email' => 'required|email',
             'company_siret' => 'nullable|string|max:20',
             'cancellation_hours' => 'required|integer|min:1',
+            'late_penalty_per_day' => 'required|numeric|min:0',
             'invoice_prefix' => 'nullable|string|max:10',
             'cgv_text' => 'nullable|string',
             'contract_message_default' => 'nullable|string',

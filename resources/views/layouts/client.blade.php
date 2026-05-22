@@ -18,9 +18,15 @@
                 <i class="fas fa-party-horn mr-2"></i>LocaFiesta
             </a>
             <div class="flex items-center gap-6">
+                @if($clientHasLateReturns)
+                <span class="bg-gray-200 text-gray-500 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed" title="Impossible : vous avez un retour en retard">
+                    <i class="fas fa-ban mr-1"></i>Nouvelle réservation impossible
+                </span>
+                @else
                 <a href="{{ route('client.reservations.create') }}" class="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-600">
                     <i class="fas fa-plus mr-1"></i>Nouvelle réservation
                 </a>
+                @endif
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" class="flex items-center gap-2 text-gray-700 hover:text-gray-900">
                         <i class="fas fa-user-circle text-xl"></i>
@@ -67,20 +73,37 @@
         </div>
     </div>
     @endif
-    @if(!empty($clientLateReservations) && $clientLateReservations->isNotEmpty())
-    <div class="bg-red-600 text-white py-2">
-        <div class="max-w-6xl mx-auto px-4 flex items-center gap-3 text-sm">
-            <i class="fas fa-exclamation-triangle flex-shrink-0"></i>
-            <span>
-                @if($clientLateReservations->count() === 1)
-                    Votre location <strong>{{ $clientLateReservations->first()->reference }}</strong>
-                    est en retard depuis le {{ $clientLateReservations->first()->end_date->format('d/m/Y') }}.
-                    <a href="{{ route('client.reservations.show', $clientLateReservations->first()) }}" class="underline font-semibold ml-1">Voir la réservation</a>
-                @else
-                    <strong>{{ $clientLateReservations->count() }} locations</strong> sont en retard de retour.
-                    <a href="{{ route('client.reservations.index') }}" class="underline font-semibold ml-1">Voir mes réservations</a>
+    @if($clientHasLateReturns)
+    @php
+        $totalLatePenalty = $clientLateReservations->sum(fn($r) => $r->days_late * $latePenaltyPerDay);
+    @endphp
+    <div class="bg-red-600 text-white py-3">
+        <div class="max-w-6xl mx-auto px-4 flex flex-wrap items-center justify-between gap-3 text-sm">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-exclamation-triangle flex-shrink-0 text-lg"></i>
+                <span>
+                    @if($clientLateReservations->count() === 1)
+                        Votre location <strong>{{ $clientLateReservations->first()->reference }}</strong>
+                        est en retard depuis le {{ $clientLateReservations->first()->end_date->format('d/m/Y') }}
+                        (<strong>{{ $clientLateReservations->first()->days_late }} jour(s)</strong>).
+                    @else
+                        <strong>{{ $clientLateReservations->count() }} locations</strong> sont en retard de retour.
+                    @endif
+                </span>
+            </div>
+            <div class="flex items-center gap-4">
+                @if($latePenaltyPerDay > 0 && $totalLatePenalty > 0)
+                <div class="bg-white/20 rounded-lg px-4 py-1.5 text-center">
+                    <div class="text-xs text-red-100 font-medium">Pénalités en cours</div>
+                    <div class="text-xl font-bold">{{ number_format($totalLatePenalty, 2, ',', ' ') }} €</div>
+                </div>
                 @endif
-            </span>
+                @if($clientLateReservations->count() === 1)
+                <a href="{{ route('client.reservations.show', $clientLateReservations->first()) }}" class="underline font-semibold whitespace-nowrap">Voir la réservation</a>
+                @else
+                <a href="{{ route('client.reservations.index') }}" class="underline font-semibold whitespace-nowrap">Voir mes réservations</a>
+                @endif
+            </div>
         </div>
     </div>
     @endif

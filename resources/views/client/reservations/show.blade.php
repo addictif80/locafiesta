@@ -213,6 +213,28 @@
             </div>
             @endif
 
+            {{-- Late return penalty --}}
+            @if($reservation->isLate())
+            @php $penalty = $reservation->days_late * $latePenaltyPerDay; @endphp
+            <div class="bg-red-50 border border-red-300 rounded-xl p-5">
+                <h2 class="text-base font-semibold text-red-800 mb-3 flex items-center gap-2">
+                    <i class="fas fa-clock text-red-500"></i> Retour en retard
+                </h2>
+                <p class="text-sm text-red-700 mb-3">
+                    Votre retour était prévu le <strong>{{ $reservation->end_date->format('d/m/Y') }}</strong> à <strong>{{ substr($reservation->end_time, 0, 5) }}</strong>.
+                    Retard constaté : <strong>{{ $reservation->days_late }} jour(s)</strong>.
+                </p>
+                @if($latePenaltyPerDay > 0)
+                <div class="bg-white border-2 border-red-400 rounded-xl p-4 text-center">
+                    <div class="text-xs text-red-600 font-semibold uppercase tracking-wide mb-1">Pénalités de retard accumulées</div>
+                    <div class="text-4xl font-bold text-red-600">{{ number_format($penalty, 2, ',', ' ') }} €</div>
+                    <div class="text-xs text-gray-500 mt-1">{{ $reservation->days_late }} jour(s) × {{ number_format($latePenaltyPerDay, 2, ',', ' ') }} €/jour</div>
+                </div>
+                @endif
+                <p class="text-xs text-red-500 mt-3">Contactez-nous pour organiser le retour dès que possible.</p>
+            </div>
+            @endif
+
             {{-- Cancel section --}}
             @if(in_array($reservation->status, ['pending_payment', 'confirmed']))
             <div id="cancel" class="bg-white rounded-xl shadow-sm border border-red-100 p-6">
