@@ -19,7 +19,7 @@
         <div class="grid grid-cols-3 gap-4 text-sm">
             <div><span class="text-gray-500">Date:</span> <span class="font-medium">{{ $inspection->signed_at?->format('d/m/Y H:i') ?? 'N/A' }}</span></div>
             <div><span class="text-gray-500">Agent:</span> <span class="font-medium">{{ $inspection->admin?->full_name ?? 'N/A' }}</span></div>
-            <div><span class="text-gray-500">Client:</span> <span class="font-medium">{{ $inspection->reservation->client->full_name }}</span></div>
+            <div><span class="text-gray-500">Client:</span> <span class="font-medium">{{ $inspection->reservation->client?->full_name ?? '—' }}</span></div>
         </div>
     </div>
 

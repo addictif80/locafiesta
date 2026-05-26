@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\MailLog;
 use App\Models\Reservation;
 use App\Models\Setting;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
@@ -16,6 +17,18 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Fix: guest middleware has no 'dashboard' or 'home' route → redirects to /
+        // which redirects back to /connexion → infinite loop.
+        // Teach it to redirect to the right dashboard based on user role.
+        RedirectIfAuthenticated::redirectUsing(function () {
+            if (auth()->check()) {
+                return auth()->user()->isAgent()
+                    ? route('admin.dashboard')
+                    : route('client.dashboard');
+            }
+            return route('login');
+        });
+
         // Log every outgoing mail to the mail_logs table.
         Event::listen(MessageSent::class, function (MessageSent $event) {
             try {
