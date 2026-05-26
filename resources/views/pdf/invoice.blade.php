@@ -168,10 +168,10 @@
                         <div class="item-name">{{ $item->equipment->name }}</div>
                         <div class="item-desc">Réf. {{ $item->equipment->reference }}</div>
                     </td>
-                    <td style="text-align: right;">{{ number_format($item->unit_price, 2, ',', ' ') }} €</td>
-                    <td style="text-align: right;">{{ $item->days }}</td>
-                    <td style="text-align: right;">{{ number_format($item->subtotal, 2, ',', ' ') }} €</td>
-                    <td style="text-align: right;">{{ number_format($item->subtotal, 2, ',', ' ') }} €</td>
+                    <td style="text-align: right;">{{ number_format($item->daily_rate, 2, ',', ' ') }} €</td>
+                    <td style="text-align: right;">{{ $invoice->reservation->days_count }}</td>
+                    <td style="text-align: right;">{{ number_format($item->daily_rate * $invoice->reservation->days_count, 2, ',', ' ') }} €</td>
+                    <td style="text-align: right;">{{ number_format($item->daily_rate * $invoice->reservation->days_count, 2, ',', ' ') }} €</td>
                 </tr>
                 @endforeach
             @else

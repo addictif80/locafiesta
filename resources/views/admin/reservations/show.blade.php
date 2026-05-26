@@ -108,8 +108,8 @@
                                     <span class="text-xs text-gray-400 ml-2">{{ $item->equipment->reference }}</span>
                                 </td>
                                 <td class="px-5 py-3 text-right">{{ number_format($item->daily_rate, 2, ',', ' ') }} €</td>
-                                <td class="px-5 py-3 text-right">{{ $item->days_count }}</td>
-                                <td class="px-5 py-3 text-right font-medium">{{ number_format($item->subtotal, 2, ',', ' ') }} €</td>
+                                <td class="px-5 py-3 text-right">{{ $reservation->days_count }}</td>
+                                <td class="px-5 py-3 text-right font-medium">{{ number_format($item->daily_rate * $reservation->days_count, 2, ',', ' ') }} €</td>
                             </tr>
                             @endforeach
                         </tbody>
