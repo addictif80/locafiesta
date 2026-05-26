@@ -116,7 +116,7 @@ class ReservationController extends Controller
     public function show(Reservation $reservation)
     {
         abort_unless($reservation->client_id === auth()->id(), 403);
-        $reservation->load(['items.equipment', 'invoices', 'inspections']);
+        $reservation->load(['items.equipment', 'invoices', 'inspections', 'promoCode']);
         return view('client.reservations.show', compact('reservation'));
     }
 
