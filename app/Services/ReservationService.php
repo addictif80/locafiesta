@@ -13,9 +13,10 @@ class ReservationService
 {
     public function createReservation(array $data, bool $byAdmin = false): Reservation
     {
-        $startDate = Carbon::parse($data['start_date']);
-        $endDate = Carbon::parse($data['end_date']);
-        $daysCount = $startDate->diffInDays($endDate) + 1;
+        $startDate = Carbon::parse($data['start_date'] . ' ' . ($data['start_time'] ?? '00:00:00'));
+        $endDate   = Carbon::parse($data['end_date']   . ' ' . ($data['end_time']   ?? '00:00:00'));
+        $minutes   = $startDate->diffInMinutes($endDate);
+        $daysCount = (int) max(1, (int) ceil($minutes / 1440));
 
         // Check availability
         foreach ($data['equipment_ids'] as $equipmentId) {

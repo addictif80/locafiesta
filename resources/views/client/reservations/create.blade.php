@@ -303,8 +303,10 @@ function reservationWizard() {
         },
         get daysCount() {
             if (!this.form.start_date || !this.form.end_date) return 0;
-            const diff = (new Date(this.form.end_date + 'T12:00:00') - new Date(this.form.start_date + 'T12:00:00')) / 86400000;
-            return Math.max(1, Math.round(diff) + 1);
+            const start = new Date(this.form.start_date + 'T' + (this.form.start_time || '09:00:00'));
+            const end   = new Date(this.form.end_date   + 'T' + (this.form.end_time   || '18:00:00'));
+            const minutes = (end - start) / 60000;
+            return Math.max(1, Math.ceil(minutes / 1440));
         },
         get subtotal() {
             return this.cartItems.reduce((sum, item) => sum + item.price * this.daysCount, 0);

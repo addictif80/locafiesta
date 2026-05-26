@@ -59,7 +59,10 @@ class Reservation extends Model
 
     public function getDaysCountAttribute(): int
     {
-        return $this->start_date->diffInDays($this->end_date) + 1;
+        $start = Carbon::parse($this->start_date->format('Y-m-d') . ' ' . $this->start_time);
+        $end   = Carbon::parse($this->end_date->format('Y-m-d')   . ' ' . $this->end_time);
+        $minutes = $start->diffInMinutes($end);
+        return (int) max(1, (int) ceil($minutes / 1440));
     }
 
     public function canBeCancelledWithRefund(): bool
