@@ -127,7 +127,7 @@ class ReservationController extends Controller
 
     public function sendContract(Reservation $reservation)
     {
-        $reservation->load(['client', 'items.equipment']);
+        $reservation->load(['client', 'items.equipment', 'promoCode']);
 
         Mail::to($reservation->client->email)->send(new ReservationContractMail($reservation));
 

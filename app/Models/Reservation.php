@@ -65,6 +65,62 @@ class Reservation extends Model
         return (int) max(1, (int) ceil($minutes / 1440));
     }
 
+    /**
+     * Subtotal recomputed from items × days_count when items are loaded,
+     * otherwise falls back to the stored value.
+     */
+    public function getSubtotalAttribute(): float
+    {
+        if ($this->relationLoaded('items')) {
+            return (float) $this->items->sum(
+                fn($item) => (float) $item->daily_rate * $this->days_count
+            );
+        }
+        return (float) ($this->attributes['subtotal'] ?? 0);
+    }
+
+    /** Alias used in PDF templates. */
+    public function getSubtotalAmountAttribute(): float
+    {
+        return $this->subtotal;
+    }
+
+    /**
+     * Discount recomputed from the promo code against the new subtotal
+     * when both items and promoCode are loaded, otherwise stored value.
+     */
+    public function getDiscountAmountAttribute(): float
+    {
+        if ($this->relationLoaded('items') && $this->relationLoaded('promoCode') && $this->promoCode) {
+            return $this->promoCode->calculateDiscount($this->subtotal);
+        }
+        return (float) ($this->attributes['discount_amount'] ?? 0);
+    }
+
+    public function getTotalAmountAttribute(): float
+    {
+        if ($this->relationLoaded('items')) {
+            return (float) max(0, $this->subtotal - $this->discount_amount);
+        }
+        return (float) ($this->attributes['total_amount'] ?? 0);
+    }
+
+    public function getDepositAmountAttribute(): float
+    {
+        if ($this->relationLoaded('items')) {
+            return (float) round($this->total_amount * (float) $this->deposit_percentage / 100, 2);
+        }
+        return (float) ($this->attributes['deposit_amount'] ?? 0);
+    }
+
+    public function getBalanceAmountAttribute(): float
+    {
+        if ($this->relationLoaded('items')) {
+            return (float) round($this->total_amount - $this->deposit_amount, 2);
+        }
+        return (float) ($this->attributes['balance_amount'] ?? 0);
+    }
+
     public function canBeCancelledWithRefund(): bool
     {
         return Carbon::now()->lt($this->start_date->setTimeFromTimeString($this->start_time)->subHours(48));
