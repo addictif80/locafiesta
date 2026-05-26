@@ -71,13 +71,15 @@
             <div class="bg-white rounded-xl shadow-sm border">
                 <div class="px-5 py-4 border-b flex items-center justify-between">
                     <h3 class="font-semibold text-gray-800"><i class="fas fa-user mr-2 text-orange-400"></i>Client</h3>
+                    @if($reservation->client)
                     <a href="{{ route('admin.clients.show', $reservation->client) }}" class="text-sm text-orange-500 hover:underline">Voir le profil</a>
+                    @endif
                 </div>
                 <div class="p-5 grid grid-cols-2 gap-4 text-sm">
-                    <div><span class="text-gray-500">Nom:</span> <span class="font-medium">{{ $reservation->client->full_name }}</span></div>
-                    <div><span class="text-gray-500">Email:</span> <span class="font-medium">{{ $reservation->client->email }}</span></div>
-                    <div><span class="text-gray-500">Téléphone:</span> <span class="font-medium">{{ $reservation->client->phone }}</span></div>
-                    <div><span class="text-gray-500">Adresse:</span> <span class="font-medium">{{ $reservation->client->address }}, {{ $reservation->client->postal_code }} {{ $reservation->client->city }}</span></div>
+                    <div><span class="text-gray-500">Nom:</span> <span class="font-medium">{{ $reservation->client?->full_name ?? '(client supprimé)' }}</span></div>
+                    <div><span class="text-gray-500">Email:</span> <span class="font-medium">{{ $reservation->client?->email ?? '—' }}</span></div>
+                    <div><span class="text-gray-500">Téléphone:</span> <span class="font-medium">{{ $reservation->client?->phone ?? '—' }}</span></div>
+                    <div><span class="text-gray-500">Adresse:</span> <span class="font-medium">{{ $reservation->client ? $reservation->client->address . ', ' . $reservation->client->postal_code . ' ' . $reservation->client->city : '—' }}</span></div>
                     @if($reservation->use_different_address)
                     <div class="col-span-2 bg-amber-50 rounded-lg p-3">
                         <span class="text-amber-700 text-xs font-medium">Adresse d'utilisation différente:</span>

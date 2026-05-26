@@ -21,7 +21,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Réservation (optionnel)</label>
                 <select name="reservation_id" class="w-full border rounded-lg px-3 py-2 text-sm">
                     <option value="">Aucune</option>
-                    @foreach($reservations as $res)<option value="{{ $res->id }}" {{ old('reservation_id') == $res->id ? 'selected' : '' }}>{{ $res->reference }} — {{ $res->client->full_name }}</option>@endforeach
+                    @foreach($reservations as $res)<option value="{{ $res->id }}" {{ old('reservation_id') == $res->id ? 'selected' : '' }}>{{ $res->reference }} — {{ $res->client?->full_name ?? '(supprimé)' }}</option>@endforeach
                 </select>
             </div>
             <div>

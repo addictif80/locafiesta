@@ -20,7 +20,7 @@
                 </div>
                 <div>
                     <div class="text-sm font-semibold text-gray-800">
-                        {{ $res->client->full_name }}
+                        {{ $res->client?->full_name ?? '(client supprimé)' }}
                         <span class="font-mono text-gray-500 font-normal ml-2">{{ $res->reference }}</span>
                     </div>
                     <div class="text-xs text-red-600 font-medium">
@@ -97,7 +97,7 @@
             @forelse($upcoming as $res)
             <div class="px-5 py-3 flex items-center justify-between hover:bg-gray-50">
                 <div>
-                    <div class="text-sm font-medium text-gray-800">{{ $res->client->full_name }}</div>
+                    <div class="text-sm font-medium text-gray-800">{{ $res->client?->full_name ?? '(client supprimé)' }}</div>
                     <div class="text-xs text-gray-500">
                         {{ $res->start_date->format('d/m/Y') }} → {{ $res->end_date->format('d/m/Y') }}
                         · {{ $res->items->count() }} matériel(s)
@@ -128,7 +128,7 @@
             <div class="px-5 py-3 flex items-center justify-between hover:bg-gray-50">
                 <div>
                     <div class="text-sm font-medium text-gray-800">{{ $res->reference }}</div>
-                    <div class="text-xs text-gray-500">{{ $res->client->full_name }} · {{ $res->created_at->format('d/m/Y H:i') }}</div>
+                    <div class="text-xs text-gray-500">{{ $res->client?->full_name ?? '(client supprimé)' }} · {{ $res->created_at->format('d/m/Y H:i') }}</div>
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="font-semibold text-sm text-gray-700">{{ number_format($res->total_amount, 2, ',', ' ') }} €</span>

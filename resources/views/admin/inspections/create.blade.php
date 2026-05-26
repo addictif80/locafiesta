@@ -13,7 +13,7 @@
             {{ $type === 'departure' ? '🚀 État des lieux de départ' : '🏁 État des lieux de retour' }}
         </h2>
         <p class="text-sm text-gray-500">
-            Client: {{ $reservation->client->full_name }} —
+            Client: {{ $reservation->client?->full_name ?? '(client supprimé)' }} —
             Du {{ $reservation->start_date->format('d/m/Y') }} au {{ $reservation->end_date->format('d/m/Y') }}
         </p>
     </div>

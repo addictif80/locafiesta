@@ -8,8 +8,15 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\Client;
 use Illuminate\Support\Facades\Route;
 
-// Public
-Route::get('/', fn() => redirect()->route('login'));
+// Public — redirect authenticated users to the right dashboard, others to login
+Route::get('/', function () {
+    if (auth()->check()) {
+        return auth()->user()->isAgent()
+            ? redirect()->route('admin.dashboard')
+            : redirect()->route('client.dashboard');
+    }
+    return redirect()->route('login');
+});
 
 // Auth
 Route::middleware('guest')->group(function () {

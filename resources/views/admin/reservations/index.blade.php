@@ -85,9 +85,13 @@
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 font-mono text-xs text-gray-700 font-medium">{{ $reservation->reference }}</td>
                     <td class="px-4 py-3">
+                        @if($reservation->client)
                         <a href="{{ route('admin.clients.show', $reservation->client) }}" class="text-gray-800 hover:text-orange-500 font-medium">
                             {{ $reservation->client->first_name }} {{ $reservation->client->last_name }}
                         </a>
+                        @else
+                        <span class="text-gray-400 italic text-xs">Client supprimé</span>
+                        @endif
                     </td>
                     <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
                         {{ $reservation->start_date->format('d/m/Y') }}<br>
