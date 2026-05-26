@@ -51,6 +51,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Reservations
     Route::resource('reservations', Admin\ReservationController::class);
     Route::post('reservations/{reservation}/annuler', [Admin\ReservationController::class, 'cancel'])->name('reservations.cancel');
+    Route::post('reservations/{reservation}/envoyer-contrat', [Admin\ReservationController::class, 'sendContract'])->name('reservations.send-contract');
 
     // Inspections
     Route::get('etats-des-lieux', [Admin\InspectionController::class, 'index'])->name('inspections.index');

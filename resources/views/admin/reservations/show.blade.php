@@ -33,6 +33,13 @@
                class="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-200">
                 <i class="fas fa-file-contract"></i>Contrat PDF
             </a>
+            <form method="POST" action="{{ route('admin.reservations.send-contract', $reservation) }}" class="inline">
+                @csrf
+                <button type="submit"
+                        class="flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm hover:bg-blue-100">
+                    <i class="fas fa-envelope"></i>Envoyer par mail
+                </button>
+            </form>
             @if($reservation->status === 'confirmed' && !$reservation->departureInspection)
             <a href="{{ route('admin.inspections.create', [$reservation, 'departure']) }}"
                class="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-600">
