@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\MailLog;
 use App\Models\Reservation;
 use App\Models\Setting;
+use Illuminate\Mail\Events\MessageSent;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,6 +16,26 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Log every outgoing mail to the mail_logs table.
+        Event::listen(MessageSent::class, function (MessageSent $event) {
+            try {
+                $to      = $event->message->getTo();
+                $toAddr  = $to ? $to[0]->getAddress() : null;
+                $toName  = ($to && $to[0]->getName()) ? $to[0]->getName() : null;
+
+                MailLog::create([
+                    'to_email'       => $toAddr,
+                    'to_name'        => $toName,
+                    'subject'        => $event->message->getSubject() ?? '(sans objet)',
+                    'mailable_class' => $event->mailable ? get_class($event->mailable) : null,
+                    'html_body'      => $event->message->getHtmlBody(),
+                    'sent_at'        => now(),
+                ]);
+            } catch (\Throwable) {
+                // Never let logging break a mail send.
+            }
+        });
+
         // Single global composer with static cache — runs the DB query at most once per request.
         View::composer('*', function ($view) {
             static $shared = null;

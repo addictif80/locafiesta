@@ -74,6 +74,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('blocages/{blockedDate}', [Admin\BlockedDateController::class, 'destroy'])->name('blocked-dates.destroy');
     Route::get('blocages/json', [Admin\BlockedDateController::class, 'getJson'])->name('blocked-dates.json');
 
+    // Mail log
+    Route::get('mail-log', [Admin\MailLogController::class, 'index'])->name('mail-log.index');
+    Route::get('mail-log/{mailLog}', [Admin\MailLogController::class, 'show'])->name('mail-log.show');
+    Route::get('mail-log/{mailLog}/apercu', [Admin\MailLogController::class, 'preview'])->name('mail-log.preview');
+    Route::delete('mail-log/{mailLog}', [Admin\MailLogController::class, 'destroy'])->name('mail-log.destroy');
+
     // Promo codes
     Route::get('codes-promo', [Admin\PromoCodeController::class, 'index'])->name('promo-codes.index');
     Route::post('codes-promo', [Admin\PromoCodeController::class, 'store'])->name('promo-codes.store');
