@@ -53,12 +53,9 @@
                         <p class="text-sm text-blue-600 font-medium">à {{ $reservation->end_time }}</p>
                     </div>
                 </div>
-                @php
-                    $days = $reservation->start_date->diffInDays($reservation->end_date) + 1;
-                @endphp
                 <p class="text-sm text-gray-500 mt-3">
                     <i class="fas fa-clock text-gray-400 mr-1"></i>
-                    Durée : <strong>{{ $days }} jour(s)</strong>
+                    Durée : <strong>{{ $reservation->days_count }} jour(s)</strong>
                 </p>
             </div>
 
@@ -88,13 +85,13 @@
                                     {{ $item->equipment->reference }}
                                 </td>
                                 <td class="px-4 py-3 text-right text-gray-700">
-                                    {{ number_format($item->unit_price, 2, ',', ' ') }} €
+                                    {{ number_format($item->daily_rate, 2, ',', ' ') }} €
                                 </td>
                                 <td class="px-4 py-3 text-right text-gray-700">
-                                    {{ $item->days ?? $days }}
+                                    {{ $reservation->days_count }}
                                 </td>
                                 <td class="px-4 py-3 text-right font-semibold text-gray-900">
-                                    {{ number_format($item->subtotal, 2, ',', ' ') }} €
+                                    {{ number_format($item->daily_rate * $reservation->days_count, 2, ',', ' ') }} €
                                 </td>
                             </tr>
                             @endforeach

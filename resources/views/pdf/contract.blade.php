@@ -114,9 +114,6 @@
 
     {{-- Equipment --}}
     <div class="section-title">Matériels loués</div>
-    @php
-        $days = $reservation->start_date->diffInDays($reservation->end_date) + 1;
-    @endphp
     <table class="items-table">
         <thead>
             <tr>
@@ -132,12 +129,12 @@
             <tr>
                 <td style="font-family: monospace; font-size: 9px;">{{ $item->equipment->reference }}</td>
                 <td style="font-weight: 600;">{{ $item->equipment->name }}</td>
-                <td style="text-align: right;">{{ number_format($item->unit_price, 2, ',', ' ') }} €</td>
+                <td style="text-align: right;">{{ number_format($item->daily_rate, 2, ',', ' ') }} €</td>
                 <td style="text-align: center; font-size: 9px;">
                     {{ $reservation->start_date->format('d/m') }} — {{ $reservation->end_date->format('d/m/Y') }}<br>
-                    <span style="color: #9ca3af;">({{ $item->days ?? $days }} jour(s))</span>
+                    <span style="color: #9ca3af;">({{ $reservation->days_count }} jour(s))</span>
                 </td>
-                <td style="text-align: right; font-weight: 600;">{{ number_format($item->subtotal, 2, ',', ' ') }} €</td>
+                <td style="text-align: right; font-weight: 600;">{{ number_format($item->daily_rate * $reservation->days_count, 2, ',', ' ') }} €</td>
             </tr>
             @endforeach
         </tbody>
