@@ -6,12 +6,12 @@ use App\Models\Reservation;
 use App\Services\PdfService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Attachment;
-use Illuminate\Mail\Mailable;
+use App\Mail\BaseMailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReservationContractMail extends Mailable
+class ReservationContractMail extends BaseMailable
 {
     use Queueable, SerializesModels;
 

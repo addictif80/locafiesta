@@ -5,12 +5,12 @@ namespace App\Mail;
 use App\Models\Reservation;
 use App\Models\Setting;
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
+use App\Mail\BaseMailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReservationConfirmed extends Mailable
+class ReservationConfirmed extends BaseMailable
 {
     use Queueable, SerializesModels;
 

@@ -19,20 +19,26 @@ class AppServiceProvider extends ServiceProvider
         // Log every outgoing mail to the mail_logs table.
         Event::listen(MessageSent::class, function (MessageSent $event) {
             try {
-                $to      = $event->message->getTo();
-                $toAddr  = $to ? $to[0]->getAddress() : null;
-                $toName  = ($to && $to[0]->getName()) ? $to[0]->getName() : null;
+                // $event->message via __get returns the Symfony\Component\Mime\Email object
+                $symfonyMsg = $event->message;
+
+                $to     = $symfonyMsg->getTo();
+                $toAddr = $to ? $to[0]->getAddress() : null;
+                $toName = ($to && $to[0]->getName()) ? $to[0]->getName() : null;
+
+                // BaseMailable injects __mailableClass into view data so we can identify the type
+                $mailableClass = $event->data['__mailableClass'] ?? null;
 
                 MailLog::create([
                     'to_email'       => $toAddr,
                     'to_name'        => $toName,
-                    'subject'        => $event->message->getSubject() ?? '(sans objet)',
-                    'mailable_class' => $event->mailable ? get_class($event->mailable) : null,
-                    'html_body'      => $event->message->getHtmlBody(),
+                    'subject'        => $symfonyMsg->getSubject() ?? '(sans objet)',
+                    'mailable_class' => $mailableClass,
+                    'html_body'      => $symfonyMsg->getHtmlBody(),
                     'sent_at'        => now(),
                 ]);
-            } catch (\Throwable) {
-                // Never let logging break a mail send.
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('MailLog listener failed: ' . $e->getMessage());
             }
         });
 
